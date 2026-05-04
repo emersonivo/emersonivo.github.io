@@ -734,33 +734,41 @@ const CFG = {
 // ════════════════════════════════════════════
 //  ÁUDIO — iOS unlock
 // ════════════════════════════════════════════
-let actx = null, audioOK = false;
+let actx = null;
 
+// ── Unlock AudioContext no iOS/Firefox ────────────────────────────────────
+// Regras do WebKit iOS:
+//   1. AudioContext deve ser criado DENTRO de um handler de gesto do usuário.
+//   2. resume() deve ser chamado no mesmo stack síncrono.
+//   3. Um oscilador real (não buffer silencioso) deve ser iniciado antes de
+//      qualquer chamada futura de áudio — o flag de "unlocked" deve ser
+//      definido SINCRONAMENTE, não em callback assíncrono (onended, .then),
+//      pois o setInterval do timer não é considerado gesto e cairia no guard.
+// ─────────────────────────────────────────────────────────────────────────
 function unlockAudio() {
-  if (audioOK) return;
+  if (actx) return;   // já inicializado nesta sessão
   try {
     actx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Safari requires resume() inside the gesture stack
-    const resume = actx.state === 'suspended' ? actx.resume() : Promise.resolve();
+    // resume() síncrono — o iOS precisa disto no mesmo call stack do clique
+    if (actx.state === 'suspended') actx.resume();
 
-    resume.then(() => {
-      // Firefox iOS + older Safari need a real (not silent) tone to unlock.
-      // 20 Hz at near-zero gain is physically inaudible but satisfies the policy.
-      const o = actx.createOscillator();
-      const g = actx.createGain();
-      o.connect(g); g.connect(actx.destination);
-      o.frequency.value = 20;
-      g.gain.setValueAtTime(0.001, actx.currentTime);
-      o.start(actx.currentTime);
-      o.stop(actx.currentTime + 0.2);
-      o.onended = () => { audioOK = true; };
-    });
-  } catch(e) { console.warn('AudioContext:', e); }
+    // Tom real a 1 Hz: abaixo do limiar auditivo humano (~20 Hz),
+    // mas satisfaz a política de "áudio real" do WebKit/Firefox iOS.
+    // Definido ANTES de qualquer await ou callback — completamente síncrono.
+    const o = actx.createOscillator();
+    const g = actx.createGain();
+    o.connect(g); g.connect(actx.destination);
+    o.frequency.value = 1;       // 1 Hz — inaudível
+    g.gain.value = 0.001;        // volume quase zero
+    o.start(actx.currentTime);
+    o.stop(actx.currentTime + 0.5);
+    // Nenhum callback assíncrono aqui — actx != null já serve como flag
+  } catch(e) { actx = null; console.warn('AudioContext:', e); }
 }
 
 function tone(freq, t, dur, vol) {
-  if (!actx || !audioOK) return;
+  if (!actx) return;
   try {
     const o = actx.createOscillator(), g = actx.createGain();
     o.connect(g); g.connect(actx.destination);
