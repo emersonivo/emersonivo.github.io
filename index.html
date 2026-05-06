@@ -7,7 +7,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Ciclos de Estudo</title>
 <style>
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -20,17 +19,17 @@
   --subtext: #55556a;
   --dim:     #2e2e40;
 
-  --c0: #50e090;
-  --c1: #5ab8ff;
-  --c2: #c864f0;
-  --c3: #ff7c40;
-  --c4: #ff4090;   /* flashcards */
-  --cr: #40d8d8;
+  --c0: #50e090;   /* green  — video / varredura */
+  --c1: #5ab8ff;   /* blue   — leitura / ativa   */
+  --c2: #c864f0;   /* purple — recall / simulado  */
+  --c3: #ff7c40;   /* orange — descanso / analysis*/
+  --c4: #ff4090;   /* pink   — flashcards         */
+  --cr: #40d8d8;   /* teal   — pausa / break      */
 
   --phase-color: var(--c0);
 
-  --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Fira Mono', 'Consolas', monospace;
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  --mono: ui-monospace,'SF Mono','Cascadia Code','Fira Mono','Consolas',monospace;
+  --sans: -apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',sans-serif;
 }
 
 html { background: var(--bg); }
@@ -43,7 +42,7 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 0 0 max(32px, env(safe-area-inset-bottom));
+  padding: 0 0 max(32px,env(safe-area-inset-bottom));
   overflow-x: hidden;
 }
 
@@ -57,9 +56,7 @@ body {
 }
 .screen.active { display: flex; }
 
-/* ══════════════════════════════════════
-   LANG SWITCHER
-══════════════════════════════════════ */
+/* ══════════ LANG SWITCHER ══════════ */
 .lang-switcher {
   display: flex;
   gap: 5px;
@@ -76,20 +73,112 @@ body {
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  transition: color 0.18s, border-color 0.18s;
+  transition: color .18s, border-color .18s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.lang-btn.active {
-  color: var(--phase-color);
-  border-color: var(--phase-color);
+.lang-btn.active { color: var(--phase-color); border-color: var(--phase-color); }
+
+/* ══════════ SCREEN: MODE SELECT ══════════ */
+#screen-mode { padding-top: 48px; gap: 0; }
+
+.mode-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 32px;
+}
+.mode-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c0);
+}
+.mode-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* ══════════════════════════════════════
-   SCREEN CONFIG
-══════════════════════════════════════ */
-#screen-config { padding-top: 40px; gap: 0; }
+.mode-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+}
 
+.mode-card {
+  width: 100%;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  cursor: pointer;
+  transition: border-color .22s, background .22s, box-shadow .22s;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.mode-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--mode-accent, var(--c0));
+  opacity: 0;
+  transition: opacity .22s;
+}
+.mode-card:hover { border-color: var(--mode-accent, var(--c0)); box-shadow: 0 0 28px color-mix(in srgb, var(--mode-accent,var(--c0)) 18%, transparent); }
+.mode-card:hover::after { opacity: 0.04; }
+.mode-card:active::after { opacity: 0.08; }
+
+.mode-card-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--mode-accent,var(--c0)) 12%, transparent);
+  border-radius: 12px;
+}
+.mode-card-body { flex: 1; min-width: 0; }
+.mode-card-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.mode-card-desc {
+  font-size: 0.73rem;
+  color: var(--subtext);
+  line-height: 1.5;
+}
+.mode-card-seq {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--mode-accent, var(--c0));
+  margin-top: 6px;
+  letter-spacing: 0.05em;
+}
+.mode-card-arrow {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--mode-accent, var(--c0));
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* ══════════ SHARED CONFIG COMPONENTS ══════════ */
 .config-header {
   display: flex;
   flex-direction: column;
@@ -104,11 +193,26 @@ body {
   text-transform: uppercase;
   color: var(--phase-color);
 }
-.config-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.config-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+
+.back-btn {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--subtext);
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+  margin-bottom: 22px;
+  align-self: flex-start;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
+.back-btn:hover, .back-btn:active { color: var(--text); border-color: var(--muted); }
 
 .block {
   width: 100%;
@@ -134,27 +238,11 @@ body {
   color: var(--subtext);
   flex-shrink: 0;
 }
-.block-hint {
-  font-size: 0.7rem;
-  color: var(--subtext);
-  text-align: right;
-}
+.block-hint { font-size: 0.7rem; color: var(--subtext); text-align: right; }
 
-/* ── Linha de ciclos ── */
-.ciclos-row {
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+.ciclos-row { padding: 14px 16px; display: flex; align-items: center; gap: 14px; }
 .ciclos-label { flex: 1; font-size: 0.92rem; font-weight: 500; }
-.ciclos-sub {
-  display: block;
-  font-size: 0.7rem;
-  color: var(--subtext);
-  font-weight: 400;
-  margin-top: 2px;
-}
+.ciclos-sub { display: block; font-size: 0.7rem; color: var(--subtext); font-weight: 400; margin-top: 2px; }
 
 .num-control {
   display: flex;
@@ -175,7 +263,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s;
+  transition: color .15s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   flex-shrink: 0;
@@ -192,13 +280,11 @@ body {
   border: none;
   outline: none;
   padding: 0 2px;
-  -webkit-tap-highlight-color: transparent;
 }
-.num-val::-webkit-inner-spin-button,
-.num-val::-webkit-outer-spin-button { -webkit-appearance: none; }
+.num-val::-webkit-inner-spin-button, .num-val::-webkit-outer-spin-button { -webkit-appearance: none; }
 .num-val[type=number] { -moz-appearance: textfield; }
 
-/* ── Linhas de fase ── */
+/* ── Phase rows (free mode) ── */
 .phase-row {
   display: flex;
   align-items: center;
@@ -206,11 +292,7 @@ body {
   padding: 11px 16px;
   border-bottom: 1px solid var(--border);
 }
-.phase-dot-cfg {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
+.phase-dot-cfg { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .phase-name-input {
   flex: 1;
   background: transparent;
@@ -224,12 +306,7 @@ body {
 }
 .phase-name-input::placeholder { color: var(--subtext); }
 
-.dur-group {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-}
+.dur-group { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
 .dur-input {
   width: 46px;
   background: var(--dim);
@@ -242,12 +319,10 @@ body {
   text-align: center;
   padding: 6px 4px;
   outline: none;
-  transition: border-color 0.2s;
-  -webkit-tap-highlight-color: transparent;
+  transition: border-color .2s;
 }
 .dur-input:focus { border-color: var(--phase-color); }
-.dur-input::-webkit-inner-spin-button,
-.dur-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.dur-input::-webkit-inner-spin-button, .dur-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 .dur-input[type=number] { -moz-appearance: textfield; }
 .dur-unit {
   font-family: var(--mono);
@@ -259,16 +334,8 @@ body {
 }
 
 /* ── Toggle switch ── */
-.toggle-switch {
-  position: relative;
-  width: 40px; height: 22px;
-  display: inline-block;
-  flex-shrink: 0;
-}
-.toggle-switch input {
-  opacity: 0; width: 0; height: 0;
-  position: absolute;
-}
+.toggle-switch { position: relative; width: 40px; height: 22px; display: inline-block; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
 .toggle-slider {
   position: absolute;
   inset: 0;
@@ -276,8 +343,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 22px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-  -webkit-tap-highlight-color: transparent;
+  transition: background .2s, border-color .2s;
 }
 .toggle-slider::before {
   content: '';
@@ -286,18 +352,11 @@ body {
   border-radius: 50%;
   background: var(--subtext);
   top: 2px; left: 2px;
-  transition: transform 0.22s ease, background 0.2s;
+  transition: transform .22s ease, background .2s;
 }
-.toggle-switch input:checked + .toggle-slider {
-  background: color-mix(in srgb, var(--phase-color) 22%, transparent);
-  border-color: var(--phase-color);
-}
-.toggle-switch input:checked + .toggle-slider::before {
-  transform: translateX(18px);
-  background: var(--phase-color);
-}
+.toggle-switch input:checked + .toggle-slider { background: color-mix(in srgb,var(--phase-color) 22%,transparent); border-color: var(--phase-color); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); background: var(--phase-color); }
 
-/* ── Option rows (new checkboxes) ── */
 .option-row {
   display: flex;
   align-items: center;
@@ -306,38 +365,23 @@ body {
   border-top: 1px solid var(--border);
 }
 .opt-text { flex: 1; min-width: 0; }
-.opt-text strong {
-  display: block;
-  font-size: 0.87rem;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 2px;
-}
+.opt-text strong { display: block; font-size: 0.87rem; font-weight: 500; color: var(--text); margin-bottom: 2px; }
 .opt-text small { font-size: 0.68rem; color: var(--subtext); }
-.opt-inline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
+.opt-inline { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
 /* ── Alert 90 min ── */
 .alert-90 {
   margin: 8px 14px 12px;
   padding: 12px 14px;
-  background: color-mix(in srgb, #f0a820 8%, transparent);
-  border: 1px solid color-mix(in srgb, #f0a820 28%, transparent);
+  background: color-mix(in srgb,#f0a820 8%,transparent);
+  border: 1px solid color-mix(in srgb,#f0a820 28%,transparent);
   border-radius: 8px;
   display: none;
   flex-direction: column;
   gap: 10px;
 }
 .alert-90.visible { display: flex; }
-.alert-90-text {
-  font-size: 0.78rem;
-  color: #f0a820;
-  line-height: 1.55;
-}
+.alert-90-text { font-size: 0.78rem; color: #f0a820; line-height: 1.55; }
 .alert-relax-btn {
   font-family: var(--mono);
   font-size: 0.6rem;
@@ -345,20 +389,17 @@ body {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   background: transparent;
-  border: 1px solid color-mix(in srgb, #f0a820 55%, transparent);
+  border: 1px solid color-mix(in srgb,#f0a820 55%,transparent);
   color: #f0a820;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   align-self: flex-start;
-  transition: background 0.18s, color 0.18s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  transition: background .18s, color .18s;
 }
-.alert-relax-btn:active,
-.alert-relax-btn:hover { background: #f0a820; color: #0e0e10; }
+.alert-relax-btn:active, .alert-relax-btn:hover { background: #f0a820; color: #0e0e10; }
 
-/* ── Avançado ── */
+/* ── Advanced toggle ── */
 .advanced-toggle {
   display: flex;
   align-items: center;
@@ -373,21 +414,9 @@ body {
   border: none;
   text-align: left;
 }
-.adv-arrow {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--subtext);
-  transition: transform 0.2s;
-  display: inline-block;
-}
+.adv-arrow { font-family: var(--mono); font-size: 0.65rem; color: var(--subtext); transition: transform .2s; display: inline-block; }
 .advanced-toggle.open .adv-arrow { transform: rotate(90deg); }
-.adv-label {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--subtext);
-}
+.adv-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--subtext); }
 .advanced-body { width: 100%; display: none; margin-bottom: 10px; }
 .advanced-body.open { display: block; }
 
@@ -400,15 +429,34 @@ body {
 }
 .adv-row:last-child { border-bottom: none; }
 .adv-text { flex: 1; }
-.adv-text strong {
-  display: block;
-  font-size: 0.87rem;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
+.adv-text strong { display: block; font-size: 0.87rem; font-weight: 500; margin-bottom: 2px; }
 .adv-text small { font-size: 0.7rem; color: var(--subtext); }
 
-/* ── Botão iniciar ── */
+/* ── A2 phase rows (read-only) ── */
+.a2-phase-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.a2-phase-row:last-child { border-bottom: none; }
+.a2-phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.a2-phase-name { flex: 1; font-size: 0.88rem; font-weight: 500; }
+.a2-phase-dur { font-family: var(--mono); font-size: 0.78rem; font-weight: 700; }
+.a2-phase-dur-sub { font-size: 0.65rem; color: var(--subtext); }
+
+/* ── Estimate bar ── */
+.estimate-row {
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.estimate-label { font-size: 0.78rem; color: var(--subtext); flex: 1; }
+.estimate-val { font-family: var(--mono); font-size: 0.85rem; color: var(--c0); font-weight: 700; }
+
+/* ── Start button ── */
 .btn-start-cfg {
   width: 100%;
   padding: 17px;
@@ -422,29 +470,20 @@ body {
   text-transform: uppercase;
   border-radius: 10px;
   cursor: pointer;
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  transition: background .18s, color .18s, box-shadow .18s;
   margin-top: 10px;
   margin-bottom: 22px;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.btn-start-cfg:active,
-.btn-start-cfg:hover {
+.btn-start-cfg:active, .btn-start-cfg:hover {
   background: var(--phase-color);
   color: #0e0e10;
-  box-shadow: 0 0 28px color-mix(in srgb, var(--phase-color) 35%, transparent);
+  box-shadow: 0 0 28px color-mix(in srgb,var(--phase-color) 35%,transparent);
 }
-.config-note {
-  font-size: 0.7rem;
-  color: var(--subtext);
-  text-align: center;
-  line-height: 1.7;
-  padding-bottom: 20px;
-}
+.config-note { font-size: 0.7rem; color: var(--subtext); text-align: center; line-height: 1.7; padding-bottom: 20px; }
 
-/* ══════════════════════════════════════
-   SCREEN TIMER
-══════════════════════════════════════ */
+/* ══════════ SCREEN: TIMER ══════════ */
 #screen-timer { padding-top: 36px; gap: 0; }
 
 .cycle-badge {
@@ -464,7 +503,7 @@ body {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--phase-color);
-  transition: color 0.5s;
+  transition: color .5s;
   margin-bottom: 5px;
   min-height: 13px;
 }
@@ -483,9 +522,10 @@ body {
   letter-spacing: 0.06em;
   min-height: 16px;
   margin-bottom: 30px;
+  text-align: center;
+  padding: 0 12px;
 }
 
-/* ── Relógio ── */
 .clock-scene {
   position: relative;
   width: 256px; height: 256px;
@@ -495,11 +535,7 @@ body {
   margin-bottom: 24px;
   flex-shrink: 0;
 }
-.arc-svg {
-  position: absolute;
-  inset: 0;
-  transform: rotate(-90deg);
-}
+.arc-svg { position: absolute; inset: 0; transform: rotate(-90deg); }
 .arc-track    { fill: none; stroke: var(--border); stroke-width: 2; }
 .arc-inner    { fill: none; stroke: var(--border); stroke-width: 1; opacity: 0.4; }
 .arc-progress {
@@ -507,7 +543,7 @@ body {
   stroke: var(--phase-color);
   stroke-width: 3;
   stroke-linecap: round;
-  transition: stroke-dashoffset 1s linear, stroke 0.5s ease, filter 0.5s ease;
+  transition: stroke-dashoffset 1s linear, stroke .5s ease, filter .5s ease;
   filter: drop-shadow(0 0 5px var(--phase-color));
 }
 .clock {
@@ -519,17 +555,13 @@ body {
   color: var(--text);
   position: relative;
   z-index: 1;
-  transition: color 0.4s;
+  transition: color .4s;
   user-select: none;
 }
 .clock.warning  { color: #f0a820; }
-.clock.critical { color: #f05050; animation: blink 0.65s ease-in-out infinite; }
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
-}
+.clock.critical { color: #f05050; animation: blink .65s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
 
-/* ── Dots ── */
 .dots {
   display: flex;
   gap: 9px;
@@ -537,21 +569,58 @@ body {
   margin-bottom: 36px;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 300px;
+  max-width: 320px;
 }
 .dot {
-  width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--border);
   border: 1px solid var(--muted);
-  transition: all 0.35s ease;
+  transition: all .35s ease;
   flex-shrink: 0;
 }
+.dot-normal { width: 8px; height: 8px; }
+.dot-a2 { width: 10px; height: 10px; }
 .dot.done   { background: var(--muted); border-color: var(--muted); transform: scale(0.75); }
-.dot.active { background: var(--phase-color); border-color: var(--phase-color);
-              transform: scale(1.3); box-shadow: 0 0 7px var(--phase-color); }
+.dot.active { background: var(--phase-color); border-color: var(--phase-color); transform: scale(1.3); box-shadow: 0 0 7px var(--phase-color); }
 
-/* ── Botões timer ── */
+/* A2 phase dots with labels */
+.dots-a2 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 36px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.dot-a2-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.dot-a2-circle {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  background: var(--border);
+  transition: all .35s ease;
+}
+.dot-a2-circle.done   { background: var(--muted); border-color: var(--muted); transform: scale(0.8); }
+.dot-a2-circle.active { border-color: var(--phase-color); background: var(--phase-color); transform: scale(1.25); box-shadow: 0 0 8px var(--phase-color); }
+.dot-a2-label {
+  font-family: var(--mono);
+  font-size: 0.45rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--subtext);
+  transition: color .35s;
+  text-align: center;
+  max-width: 40px;
+  line-height: 1.2;
+}
+.dot-a2-item.active .dot-a2-label { color: var(--phase-color); }
+
+/* ── Timer buttons ── */
 .btn-primary {
   font-family: var(--mono);
   font-size: 0.72rem;
@@ -564,17 +633,16 @@ body {
   padding: 15px 52px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s, border-color 0.5s;
+  transition: background .18s, color .18s, box-shadow .18s, border-color .5s;
   min-width: 210px;
   margin-bottom: 12px;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.btn-primary:active,
-.btn-primary:hover:not(:disabled) {
+.btn-primary:active, .btn-primary:hover:not(:disabled) {
   background: var(--phase-color);
   color: #0e0e10;
-  box-shadow: 0 0 22px color-mix(in srgb, var(--phase-color) 35%, transparent);
+  box-shadow: 0 0 22px color-mix(in srgb,var(--phase-color) 35%,transparent);
 }
 .btn-primary:disabled { border-color: var(--muted); color: var(--muted); cursor: default; }
 
@@ -588,15 +656,13 @@ body {
   color: var(--subtext);
   padding: 9px 18px;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color .2s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.btn-ghost:active,
-.btn-ghost:hover { color: var(--text); }
+.btn-ghost:active, .btn-ghost:hover { color: var(--text); }
 
 .timer-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
-
 .hr { width: 32px; height: 1px; background: var(--border); margin: 10px 0 13px; }
 
 .status {
@@ -606,17 +672,18 @@ body {
   color: var(--subtext);
   min-height: 18px;
   text-align: center;
-  transition: color 0.3s;
+  transition: color .3s;
 }
-.status.hi { color: var(--phase-color); }
+.status.hi  { color: var(--phase-color); }
+.status.ok  { color: var(--c0); }
+.status.warn{ color: #f0a820; }
+.status.bad { color: #f05050; }
 
-/* ══════════════════════════════════════
-   OVERLAY — PAUSA ENTRE FASES
-══════════════════════════════════════ */
+/* ══════════ OVERLAY: PAUSE ══════════ */
 #overlay-pause {
   position: fixed;
   inset: 0;
-  background: rgba(14, 14, 16, 0.93);
+  background: rgba(14,14,16,.93);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: 100;
@@ -625,12 +692,10 @@ body {
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.45s ease;
+  transition: opacity .45s ease;
 }
-#overlay-pause.visible {
-  opacity: 1;
-  pointer-events: all;
-}
+#overlay-pause.visible { opacity: 1; pointer-events: all; }
+
 .overlay-card {
   display: flex;
   flex-direction: column;
@@ -639,8 +704,8 @@ body {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 20px;
-  width: 268px;
-  box-shadow: 0 28px 70px rgba(0,0,0,0.65);
+  width: 280px;
+  box-shadow: 0 28px 70px rgba(0,0,0,.65);
   gap: 7px;
 }
 .overlay-tag {
@@ -660,11 +725,7 @@ body {
   line-height: 1;
   filter: drop-shadow(0 0 16px var(--cr));
 }
-.overlay-sep {
-  width: 28px; height: 1px;
-  background: var(--border);
-  margin: 10px 0 3px;
-}
+.overlay-sep { width: 28px; height: 1px; background: var(--border); margin: 10px 0 3px; }
 .overlay-next-label {
   font-family: var(--mono);
   font-size: 0.48rem;
@@ -672,26 +733,138 @@ body {
   text-transform: uppercase;
   color: var(--subtext);
 }
-.overlay-next-name {
-  font-size: 0.96rem;
-  font-weight: 600;
-  color: var(--text);
-  text-align: center;
+.overlay-next-name { font-size: 0.96rem; font-weight: 600; color: var(--text); text-align: center; margin-bottom: 12px; }
+.overlay-bar-track { width: 180px; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.overlay-bar { height: 100%; width: 100%; background: var(--cr); border-radius: 2px; box-shadow: 0 0 8px var(--cr); transition: width 1s linear; }
+
+/* ══════════ OVERLAY: ERROR INPUT (A2) ══════════ */
+#overlay-error {
+  position: fixed;
+  inset: 0;
+  background: rgba(14,14,16,.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease;
+}
+#overlay-error.visible { opacity: 1; pointer-events: all; }
+
+.error-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 28px 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 300px;
+  box-shadow: 0 28px 70px rgba(0,0,0,.7);
+  gap: 0;
+}
+.error-tag {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c2);
   margin-bottom: 12px;
 }
-.overlay-bar-track {
-  width: 180px; height: 2px;
-  background: var(--border);
-  border-radius: 2px;
-  overflow: hidden;
+.error-question {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 22px;
+  line-height: 1.4;
 }
-.overlay-bar {
-  height: 100%;
+
+/* Error count buttons */
+.error-num-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.error-num-btn {
+  width: 40px; height: 44px;
+  background: var(--dim);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--subtext);
+  cursor: pointer;
+  transition: background .18s, color .18s, border-color .18s, box-shadow .18s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.error-num-btn:hover { color: var(--text); border-color: var(--muted); }
+.error-num-btn.selected-good { background: color-mix(in srgb,var(--c0) 18%,transparent); border-color: var(--c0); color: var(--c0); box-shadow: 0 0 12px color-mix(in srgb,var(--c0) 25%,transparent); }
+.error-num-btn.selected-warn { background: color-mix(in srgb,#f0a820 18%,transparent); border-color: #f0a820; color: #f0a820; box-shadow: 0 0 12px color-mix(in srgb,#f0a820 25%,transparent); }
+.error-num-btn.selected-bad  { background: color-mix(in srgb,#f05050 18%,transparent); border-color: #f05050; color: #f05050; box-shadow: 0 0 12px color-mix(in srgb,#f05050 25%,transparent); }
+
+/* Decision card (appears after number selection) */
+.decision-panel {
   width: 100%;
-  background: var(--cr);
-  border-radius: 2px;
-  box-shadow: 0 0 8px var(--cr);
-  transition: width 1s linear;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  transition: all .3s;
+}
+.decision-panel.visible { display: flex; }
+.decision-panel.good { background: color-mix(in srgb,var(--c0) 8%,transparent); border: 1px solid color-mix(in srgb,var(--c0) 25%,transparent); }
+.decision-panel.warn { background: color-mix(in srgb,#f0a820 8%,transparent); border: 1px solid color-mix(in srgb,#f0a820 25%,transparent); }
+.decision-panel.bad  { background: color-mix(in srgb,#f05050 8%,transparent); border: 1px solid color-mix(in srgb,#f05050 25%,transparent); }
+
+.decision-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.decision-panel.good .decision-title { color: var(--c0); }
+.decision-panel.warn .decision-title { color: #f0a820; }
+.decision-panel.bad  .decision-title { color: #f05050; }
+
+.decision-sub {
+  font-size: 0.7rem;
+  color: var(--subtext);
+  line-height: 1.5;
+}
+
+.error-confirm-btn {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 1.5px solid var(--c2);
+  color: var(--c2);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .18s, color .18s, box-shadow .18s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  display: none;
+}
+.error-confirm-btn.visible { display: block; }
+.error-confirm-btn:hover, .error-confirm-btn:active {
+  background: var(--c2);
+  color: #0e0e10;
+  box-shadow: 0 0 20px color-mix(in srgb,var(--c2) 35%,transparent);
 }
 
 @media (max-height: 700px) {
@@ -699,17 +872,16 @@ body {
   .phase-sub      { margin-bottom: 16px; }
   .clock-scene    { width: 210px; height: 210px; margin-bottom: 14px; }
   .clock          { font-size: 3.8rem; }
-  .dots           { margin-bottom: 22px; }
+  .dots, .dots-a2 { margin-bottom: 22px; }
   .cycle-badge    { margin-bottom: 14px; }
 }
 </style>
 </head>
 <body>
 
-<!-- ════════ SCREEN: CONFIG ════════ -->
-<div id="screen-config" class="screen active">
+<!-- ════════ SCREEN: MODE SELECT ════════ -->
+<div id="screen-mode" class="screen active">
 
-  <!-- Language Switcher -->
   <div class="lang-switcher">
     <button class="lang-btn active" data-lang="pt-BR" onclick="setLang('pt-BR')">PT</button>
     <button class="lang-btn"        data-lang="en"    onclick="setLang('en')">EN</button>
@@ -717,8 +889,53 @@ body {
     <button class="lang-btn"        data-lang="es"    onclick="setLang('es')">ES</button>
   </div>
 
+  <div class="mode-header">
+    <div class="mode-eyebrow" data-i18n="appTitle">Ciclos de Estudo</div>
+    <div class="mode-title"   data-i18n="chooseMode">Escolha o modo</div>
+  </div>
+
+  <div class="mode-cards">
+    <!-- Free Cycles -->
+    <button class="mode-card" style="--mode-accent:var(--c0)" onclick="selectMode('free')">
+      <div class="mode-card-icon">🔄</div>
+      <div class="mode-card-body">
+        <div class="mode-card-name" data-i18n="modeFreeName">Ciclos Livres</div>
+        <div class="mode-card-desc" data-i18n="modeFreeSub">Configure fases personalizadas, repetições e opções de pausa</div>
+        <div class="mode-card-seq"  data-i18n="modeFreeSeq">Fases customizáveis · Flashcards · Pausa entre fases</div>
+      </div>
+      <div class="mode-card-arrow">›</div>
+    </button>
+
+    <!-- Abordagem 2 -->
+    <button class="mode-card" style="--mode-accent:var(--c2)" onclick="selectMode('a2')">
+      <div class="mode-card-icon">🎯</div>
+      <div class="mode-card-body">
+        <div class="mode-card-name" data-i18n="modeA2Name">Abordagem 2 — CISSP</div>
+        <div class="mode-card-desc" data-i18n="modeA2Sub">Protocolo estruturado com análise de erros e decisão por ciclo</div>
+        <div class="mode-card-seq"  data-i18n="modeA2Seq">Vídeo · Leitura · Simulado · Análise · Pausa</div>
+      </div>
+      <div class="mode-card-arrow">›</div>
+    </button>
+  </div>
+
+  <div class="config-note" data-i18n="offlineNote">Para usar offline no iPhone: Safari → Compartilhar → Adicionar à Tela de Início.</div>
+
+</div>
+
+<!-- ════════ SCREEN: CONFIG — FREE MODE ════════ -->
+<div id="screen-config" class="screen">
+
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="pt-BR" onclick="setLang('pt-BR')">PT</button>
+    <button class="lang-btn"        data-lang="en"    onclick="setLang('en')">EN</button>
+    <button class="lang-btn"        data-lang="fr"    onclick="setLang('fr')">FR</button>
+    <button class="lang-btn"        data-lang="es"    onclick="setLang('es')">ES</button>
+  </div>
+
+  <button class="back-btn" onclick="goToMode()" data-i18n="backMode">← modo</button>
+
   <div class="config-header">
-    <div class="config-eyebrow" data-i18n="appTitle">Ciclos de Estudo</div>
+    <div class="config-eyebrow" data-i18n="modeFreeName">Ciclos Livres</div>
     <div class="config-title"   data-i18n="settings">Configurações</div>
   </div>
 
@@ -731,13 +948,11 @@ body {
     <div class="ciclos-row">
       <div class="ciclos-label">
         <span data-i18n="numCycles">Nº de ciclos</span>
-        <span class="ciclos-sub" data-i18n="cycleSub">Varredura → Ativa → Recall → Descanso</span>
+        <span class="ciclos-sub" data-i18n="freeCycleSub">Varredura → Ativa → Recall → Descanso</span>
       </div>
       <div class="num-control">
         <button class="num-btn" onclick="changeCiclos(-1)">−</button>
-        <input  class="num-val" type="number" id="inp-ciclos"
-                value="1" min="1" max="10" inputmode="numeric"
-                oninput="clampField(this,1,10)" onchange="clampField(this,1,10)">
+        <input  class="num-val" type="number" id="inp-ciclos" value="1" min="1" max="10" inputmode="numeric" oninput="clampField(this,1,10)" onchange="clampField(this,1,10)">
         <button class="num-btn" onclick="changeCiclos(+1)">+</button>
       </div>
     </div>
@@ -749,10 +964,8 @@ body {
       <span class="block-label" data-i18n="phases">Fases</span>
       <span class="block-hint"  data-i18n="phasesHint">Nome e duração em minutos</span>
     </div>
-    <!-- Phase rows injected by JS above this sentinel -->
     <div id="fases-sentinel"></div>
 
-    <!-- ── Short pause toggle ── -->
     <div class="option-row">
       <div class="opt-text">
         <strong data-i18n="shortPauseLabel">Ativar pausa de 60 seg entre as fases</strong>
@@ -764,7 +977,6 @@ body {
       </label>
     </div>
 
-    <!-- ── Flashcards toggle ── -->
     <div class="option-row">
       <div class="opt-text">
         <strong data-i18n="flashcardsLabel">Ativar fase de Flashcards</strong>
@@ -772,9 +984,7 @@ body {
       </div>
       <div class="opt-inline">
         <div class="dur-group" id="fc-dur-group" style="visibility:hidden">
-          <input class="dur-input" type="number" id="inp-flashcards-dur"
-                 value="15" min="5" max="60" inputmode="numeric"
-                 oninput="updateTimeAlert()" onchange="updateTimeAlert()">
+          <input class="dur-input" type="number" id="inp-flashcards-dur" value="15" min="5" max="60" inputmode="numeric" oninput="updateTimeAlert()" onchange="updateTimeAlert()">
           <span class="dur-unit" data-i18n="minUnit">min</span>
         </div>
         <label class="toggle-switch">
@@ -784,14 +994,13 @@ body {
       </div>
     </div>
 
-    <!-- ── Alert 90 min ── -->
     <div class="alert-90" id="alert-90">
       <div class="alert-90-text" data-i18n="alert90">⚠  Total de estudo excede 90 min por ciclo. Considere distribuir em mais sessões.</div>
       <button class="alert-relax-btn" onclick="openRelax()" data-i18n="relaxBtn">▶  Relaxar com música lofi</button>
     </div>
   </div>
 
-  <!-- Avançado -->
+  <!-- Advanced -->
   <button class="advanced-toggle" id="adv-toggle" onclick="toggleAdv()">
     <span class="adv-arrow">▶</span>
     <span class="adv-label" data-i18n="advLabel">Configurações avançadas de áudio</span>
@@ -805,9 +1014,7 @@ body {
         </div>
         <div class="num-control">
           <button class="num-btn" onclick="changeAdv('beep-count',-1)">−</button>
-          <input  class="num-val" type="number" id="inp-beep-count"
-                  value="3" min="1" max="10" inputmode="numeric"
-                  oninput="clampField(this,1,10)" onchange="clampField(this,1,10)">
+          <input  class="num-val" type="number" id="inp-beep-count" value="3" min="1" max="10" inputmode="numeric" oninput="clampField(this,1,10)" onchange="clampField(this,1,10)">
           <button class="num-btn" onclick="changeAdv('beep-count',+1)">+</button>
         </div>
       </div>
@@ -817,21 +1024,164 @@ body {
           <small  data-i18n="beepWarnHint">Segundos antes do fim de cada fase para soar os bips</small>
         </div>
         <div class="dur-group">
-          <input class="dur-input" type="number" id="inp-beep-warn"
-                 value="60" min="5" max="300" inputmode="numeric">
+          <input class="dur-input" type="number" id="inp-beep-warn" value="60" min="5" max="300" inputmode="numeric">
           <span class="dur-unit" data-i18n="secUnit">seg</span>
         </div>
       </div>
     </div>
   </div>
 
-  <button class="btn-start-cfg" onclick="startFromConfig()" data-i18n="startBtn">▶  INICIAR CICLOS</button>
+  <button class="btn-start-cfg" onclick="startFromConfigFree()" data-i18n="startBtn">▶  INICIAR CICLOS</button>
+  <div class="config-note" data-i18n="offlineNote">Para usar offline no iPhone: Safari → Compartilhar → Adicionar à Tela de Início.</div>
 
-  <div class="config-note" data-i18n="offlineNote">
-    Para usar offline no iPhone: Safari → Compartilhar → Adicionar à Tela de Início.
+</div>
+
+<!-- ════════ SCREEN: CONFIG — ABORDAGEM 2 ════════ -->
+<div id="screen-config-a2" class="screen">
+
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="pt-BR" onclick="setLang('pt-BR')">PT</button>
+    <button class="lang-btn"        data-lang="en"    onclick="setLang('en')">EN</button>
+    <button class="lang-btn"        data-lang="fr"    onclick="setLang('fr')">FR</button>
+    <button class="lang-btn"        data-lang="es"    onclick="setLang('es')">ES</button>
   </div>
 
-</div><!-- /screen-config -->
+  <button class="back-btn" onclick="goToMode()" data-i18n="backMode">← modo</button>
+
+  <div class="config-header">
+    <div class="config-eyebrow" data-i18n="modeA2Name">Abordagem 2 — CISSP</div>
+    <div class="config-title"   data-i18n="settings">Configurações</div>
+  </div>
+
+  <!-- Sessão -->
+  <div class="block">
+    <div class="block-header">
+      <span class="block-label" data-i18n="sessionLabel">Sessão</span>
+      <span class="block-hint"  data-i18n="sessionHint">Repetições do ciclo completo</span>
+    </div>
+    <div class="ciclos-row">
+      <div class="ciclos-label">
+        <span data-i18n="numCycles">Nº de ciclos</span>
+        <span class="ciclos-sub" data-i18n="a2CycleSub">Vídeo → Leitura → Simulado → Análise → Pausa</span>
+      </div>
+      <div class="num-control">
+        <button class="num-btn" onclick="changeA2Ciclos(-1)">−</button>
+        <input  class="num-val" type="number" id="inp-a2-ciclos" value="1" min="1" max="6" inputmode="numeric" oninput="clampField(this,1,6);updateA2Estimate()" onchange="clampField(this,1,6);updateA2Estimate()">
+        <button class="num-btn" onclick="changeA2Ciclos(+1)">+</button>
+      </div>
+    </div>
+    <div class="estimate-row" id="a2-estimate-row">
+      <span class="estimate-label" data-i18n="estimateLabel">Duração estimada por ciclo</span>
+      <span class="estimate-val"   id="a2-estimate">35–85 min</span>
+    </div>
+  </div>
+
+  <!-- Fases A2 (visual + advanced edit) -->
+  <div class="block" id="a2-phases-block">
+    <div class="block-header">
+      <span class="block-label" data-i18n="phases">Fases</span>
+      <span class="block-hint"  data-i18n="a2PhasesHint">Protocolo estruturado</span>
+    </div>
+
+    <!-- Visual summary rows (always visible) -->
+    <div class="a2-phase-row">
+      <div class="a2-phase-dot" style="background:#50e090;box-shadow:0 0 5px #50e09066"></div>
+      <div class="a2-phase-name" data-i18n="videoPhase">Vídeo</div>
+      <div class="a2-phase-dur">
+        <span id="a2-lbl-video">5</span> <span class="a2-phase-dur-sub" data-i18n="minUnit">min</span>
+      </div>
+    </div>
+    <div class="a2-phase-row">
+      <div class="a2-phase-dot" style="background:#5ab8ff;box-shadow:0 0 5px #5ab8ff66"></div>
+      <div class="a2-phase-name" data-i18n="readingPhase">Leitura</div>
+      <div class="a2-phase-dur">
+        <span id="a2-lbl-reading">15</span> <span class="a2-phase-dur-sub" data-i18n="minUnit">min</span>
+      </div>
+    </div>
+    <div class="a2-phase-row">
+      <div class="a2-phase-dot" style="background:#c864f0;box-shadow:0 0 5px #c864f066"></div>
+      <div class="a2-phase-name" data-i18n="quizPhase">Simulado</div>
+      <div class="a2-phase-dur">
+        <span id="a2-lbl-quiz">10</span> <span class="a2-phase-dur-sub" data-i18n="minUnit">min</span>
+      </div>
+    </div>
+    <div class="a2-phase-row">
+      <div class="a2-phase-dot" style="background:#ff7c40;box-shadow:0 0 5px #ff7c4066"></div>
+      <div class="a2-phase-name" data-i18n="analysisPhase">Análise de Erros</div>
+      <div class="a2-phase-dur a2-phase-dur-sub" data-i18n="analysisAuto">10 min × erros</div>
+    </div>
+    <div class="a2-phase-row" style="border-bottom:none">
+      <div class="a2-phase-dot" style="background:#40d8d8;box-shadow:0 0 5px #40d8d866"></div>
+      <div class="a2-phase-name" data-i18n="breakPhase">Pausa</div>
+      <div class="a2-phase-dur">
+        <span id="a2-lbl-break">5</span> <span class="a2-phase-dur-sub" data-i18n="minUnit">min</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced durations -->
+  <button class="advanced-toggle" id="a2-adv-toggle" onclick="toggleA2Adv()">
+    <span class="adv-arrow">▶</span>
+    <span class="adv-label" data-i18n="advDurLabel">Ajustar durações das fases</span>
+  </button>
+  <div class="advanced-body" id="a2-adv-body">
+    <div class="block">
+      <div class="adv-row">
+        <div class="adv-text">
+          <strong data-i18n="videoPhase">Vídeo</strong>
+          <small  data-i18n="videoHint">Assistir ao vídeo selecionado</small>
+        </div>
+        <div class="dur-group">
+          <input class="dur-input" type="number" id="inp-a2-video" value="5" min="3" max="30" inputmode="numeric" oninput="syncA2Labels();updateA2Estimate()" onchange="syncA2Labels();updateA2Estimate()">
+          <span class="dur-unit" data-i18n="minUnit">min</span>
+        </div>
+      </div>
+      <div class="adv-row">
+        <div class="adv-text">
+          <strong data-i18n="readingPhase">Leitura</strong>
+          <small  data-i18n="readingHint">Leitura dirigida no Sybex</small>
+        </div>
+        <div class="dur-group">
+          <input class="dur-input" type="number" id="inp-a2-reading" value="15" min="5" max="60" inputmode="numeric" oninput="syncA2Labels();updateA2Estimate()" onchange="syncA2Labels();updateA2Estimate()">
+          <span class="dur-unit" data-i18n="minUnit">min</span>
+        </div>
+      </div>
+      <div class="adv-row">
+        <div class="adv-text">
+          <strong data-i18n="quizPhase">Simulado</strong>
+          <small  data-i18n="quizHint">5 questões no CISSPrep.net</small>
+        </div>
+        <div class="dur-group">
+          <input class="dur-input" type="number" id="inp-a2-quiz" value="10" min="5" max="30" inputmode="numeric" oninput="syncA2Labels();updateA2Estimate()" onchange="syncA2Labels();updateA2Estimate()">
+          <span class="dur-unit" data-i18n="minUnit">min</span>
+        </div>
+      </div>
+      <div class="adv-row">
+        <div class="adv-text">
+          <strong data-i18n="breakPhase">Pausa</strong>
+          <small  data-i18n="breakHint">Descanso cognitivo — sem telas</small>
+        </div>
+        <div class="dur-group">
+          <input class="dur-input" type="number" id="inp-a2-break" value="5" min="2" max="20" inputmode="numeric" oninput="syncA2Labels();updateA2Estimate()" onchange="syncA2Labels();updateA2Estimate()">
+          <span class="dur-unit" data-i18n="minUnit">min</span>
+        </div>
+      </div>
+      <div class="adv-row" style="border-bottom:none">
+        <div class="adv-text">
+          <strong data-i18n="analysisPhase">Análise de Erros</strong>
+          <small  data-i18n="analysisHintAdv">Fixo: 10 min por erro (automático)</small>
+        </div>
+        <div class="dur-group">
+          <span class="dur-unit" style="width:auto;color:var(--subtext)">10 × N</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-start-cfg" style="border-color:var(--c2);color:var(--c2)" onclick="startFromConfigA2()" data-i18n="startBtn">▶  INICIAR CICLOS</button>
+  <div class="config-note" data-i18n="a2Note">Após o Simulado, um painel pedirá o nº de erros e indicará a decisão de seguir ou repetir o ciclo.</div>
+
+</div>
 
 <!-- ════════ SCREEN: TIMER ════════ -->
 <div id="screen-timer" class="screen">
@@ -845,31 +1195,33 @@ body {
     <svg class="arc-svg" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
       <circle class="arc-track"    cx="128" cy="128" r="119"/>
       <circle class="arc-inner"    cx="128" cy="128" r="108"/>
-      <circle class="arc-progress" cx="128" cy="128" r="119"
-              id="arc" stroke-dasharray="747.7" stroke-dashoffset="0"/>
+      <circle class="arc-progress" cx="128" cy="128" r="119" id="arc" stroke-dasharray="747.7" stroke-dashoffset="0"/>
     </svg>
     <div class="clock" id="clock">--:--</div>
   </div>
 
+  <!-- Normal dots (free mode) -->
   <div class="dots" id="dots"></div>
+  <!-- A2 labeled dots -->
+  <div class="dots-a2" id="dots-a2" style="display:none"></div>
 
   <button class="btn-primary" id="btn-main" onclick="handleBtn()">▶  INICIAR</button>
 
   <div class="timer-actions">
-    <button class="btn-ghost" id="btn-skip" onclick="skipPhase()" data-i18n="skip">saltar fase →</button>
-    <button class="btn-ghost" onclick="goToConfig()" data-i18n="configure">← configurar</button>
+    <button class="btn-ghost" id="btn-skip"   onclick="skipPhase()"  data-i18n="skip">saltar fase →</button>
+    <button class="btn-ghost" id="btn-config-back" onclick="goBackFromTimer()" data-i18n="configure">← configurar</button>
   </div>
 
   <div class="hr"></div>
   <div class="status" id="st">&nbsp;</div>
 
-</div><!-- /screen-timer -->
+</div>
 
-<!-- ════════ OVERLAY: PAUSA ENTRE FASES ════════ -->
+<!-- ════════ OVERLAY: PAUSA (free mode) ════════ -->
 <div id="overlay-pause">
   <div class="overlay-card">
-    <div class="overlay-tag"       id="overlay-tag"       data-i18n="overlayTag">PAUSA</div>
-    <div class="overlay-countdown" id="overlay-countdown">01:00</div>
+    <div class="overlay-tag"        id="overlay-tag"        data-i18n="overlayTag">PAUSA</div>
+    <div class="overlay-countdown"  id="overlay-countdown">01:00</div>
     <div class="overlay-sep"></div>
     <div class="overlay-next-label" id="overlay-next-label" data-i18n="overlayNextLabel">A SEGUIR</div>
     <div class="overlay-next-name"  id="overlay-next-name">—</div>
@@ -879,27 +1231,55 @@ body {
   </div>
 </div>
 
+<!-- ════════ OVERLAY: ERRO — A2 MODE ════════ -->
+<div id="overlay-error">
+  <div class="error-card">
+    <div class="error-tag"      id="error-tag"      data-i18n="errorTag">SIMULADO CONCLUÍDO</div>
+    <div class="error-question" id="error-question" data-i18n="errorQuestion">Quantos erros em 5 questões?</div>
+
+    <div class="error-num-row" id="error-num-row">
+      <!-- 0–5 buttons injected by JS -->
+    </div>
+
+    <div class="decision-panel" id="decision-panel">
+      <div class="decision-title" id="decision-title">—</div>
+      <div class="decision-sub"   id="decision-sub">—</div>
+    </div>
+
+    <button class="error-confirm-btn" id="error-confirm-btn" onclick="confirmErrors()" data-i18n="errorConfirm">Continuar →</button>
+  </div>
+</div>
+
 <script>
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 //  TRANSLATIONS
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 const T = {
   'pt-BR': {
-    appTitle:'Ciclos de Estudo', settings:'Configurações',
+    appTitle:'Ciclos de Estudo', chooseMode:'Escolha o modo',
+    modeFreeName:'Ciclos Livres', modeFreeSub:'Configure fases personalizadas, repetições e opções de pausa',
+    modeFreeSeq:'Fases customizáveis · Flashcards · Pausa entre fases',
+    modeA2Name:'Abordagem 2 — CISSP', modeA2Sub:'Protocolo estruturado com análise de erros e decisão por ciclo',
+    modeA2Seq:'Vídeo · Leitura · Simulado · Análise · Pausa',
+    backMode:'← modo', settings:'Configurações',
     repetitions:'Repetições', repHint:'Quantas vezes rodar o ciclo completo',
-    numCycles:'Nº de ciclos', cycleSub:'Varredura → Ativa → Recall → Descanso',
+    numCycles:'Nº de ciclos', freeCycleSub:'Varredura → Ativa → Recall → Descanso',
+    a2CycleSub:'Vídeo → Leitura → Simulado → Análise → Pausa',
+    sessionLabel:'Sessão', sessionHint:'Repetições do ciclo completo',
+    estimateLabel:'Duração estimada por ciclo',
     phases:'Fases', phasesHint:'Nome e duração em minutos',
+    a2PhasesHint:'Protocolo estruturado',
     shortPauseLabel:'Ativar pausa de 60 seg entre as fases',
     shortPauseSub:'Timer bloqueado — não pode ser ignorado',
-    flashcardsLabel:'Ativar fase de Flashcards',
-    flashcardsSub:'Inserida após a última leitura',
+    flashcardsLabel:'Ativar fase de Flashcards', flashcardsSub:'Inserida após a última leitura',
     flashcardsDefault:'Flashcards',
     minUnit:'min', secUnit:'seg',
-    advLabel:'Configurações avançadas de áudio',
+    advLabel:'Configurações avançadas de áudio', advDurLabel:'Ajustar durações das fases',
     beepCount:'Bips de aviso', beepCountHint:'Quantidade de bips antes do fim de cada fase',
     beepWarn:'Aviso antecipado', beepWarnHint:'Segundos antes do fim de cada fase para soar os bips',
     startBtn:'▶  INICIAR CICLOS',
     offlineNote:'Para usar offline no iPhone: Safari → Compartilhar → Adicionar à Tela de Início.',
+    a2Note:'Após o Simulado, um painel pedirá o nº de erros e indicará a decisão de seguir ou repetir o ciclo.',
     alert90:'⚠  Total de estudo excede 90 min por ciclo. Considere distribuir em mais sessões.',
     relaxBtn:'▶  Relaxar com música lofi',
     overlayTag:'PAUSA', overlayNextLabel:'A SEGUIR',
@@ -908,27 +1288,53 @@ const T = {
     skip:'saltar fase →', configure:'← configurar',
     startTimer:'▶  INICIAR', pauseTimer:'⏸  PAUSAR', continueTimer:'▶  CONTINUAR',
     doneBtn:'✓  COMPLETO', statusPaused:'Pausado',
-    statusCycle:'🔄 Ciclo {c} de {t} iniciado',
-    congrats:'Parabéns! Todos os ciclos completos. 🏆',
+    statusCycle:'🔄 Ciclo {c} de {t} iniciado', congrats:'Parabéns! Todos os ciclos completos. 🏆',
+    // A2 specific
+    videoPhase:'Vídeo', readingPhase:'Leitura', quizPhase:'Simulado',
+    analysisPhase:'Análise de Erros', breakPhase:'Pausa',
+    videoHint:'Assista ao vídeo selecionado', readingHint:'Leia e anote no Sybex',
+    quizHint:'5 questões no CISSPrep.net', analysisHint:'Análise no NotebookLM — foque no padrão do erro',
+    breakHint:'Descanso cognitivo — sem telas', analysisAuto:'10 min × erros',
+    analysisHintAdv:'Fixo: 10 min por erro (automático)',
+    // Error overlay
+    errorTag:'SIMULADO CONCLUÍDO', errorQuestion:'Quantos erros em 5 questões?',
+    errorConfirm:'Continuar →',
+    decisionGoodTitle:'✓  Siga para o próximo tópico',
+    decisionGoodSub:'0–1 erros: padrão de domínio adequado. Frame gerencial consolidado.',
+    decisionWarnTitle:'⚠  Siga, mas marque para revisão',
+    decisionWarnSub:'2–3 erros: avance para o próximo tópico e programe revisão espaçada amanhã.',
+    decisionBadTitle:'✕  Refaça este ciclo',
+    decisionBadSub:'4–5 erros: frame conceitual não consolidado. Use um vídeo diferente e recomece.',
+    analysisStatus:'Análise de erros ({n}×10min) — NotebookLM',
+    // Phase defaults for free mode
     phaseNames:['Leitura de Varredura','Leitura Ativa','Leitura de Recall','Descanso'],
   },
   'en': {
-    appTitle:'Study Cycles', settings:'Settings',
+    appTitle:'Study Cycles', chooseMode:'Choose mode',
+    modeFreeName:'Free Cycles', modeFreeSub:'Configure custom phases, repetitions and pause options',
+    modeFreeSeq:'Custom phases · Flashcards · Inter-phase pause',
+    modeA2Name:'Approach 2 — CISSP', modeA2Sub:'Structured protocol with error analysis and per-cycle decision',
+    modeA2Seq:'Video · Reading · Quiz · Analysis · Break',
+    backMode:'← mode', settings:'Settings',
     repetitions:'Repetitions', repHint:'How many times to run the full cycle',
-    numCycles:'No. of cycles', cycleSub:'Scan → Active → Recall → Rest',
+    numCycles:'No. of cycles', freeCycleSub:'Scan → Active → Recall → Rest',
+    a2CycleSub:'Video → Reading → Quiz → Analysis → Break',
+    sessionLabel:'Session', sessionHint:'Full cycle repetitions',
+    estimateLabel:'Estimated duration per cycle',
     phases:'Phases', phasesHint:'Name and duration in minutes',
-    shortPauseLabel:'Enable 60-second pause between phases',
+    a2PhasesHint:'Structured protocol',
+    shortPauseLabel:'Enable 60-sec pause between phases',
     shortPauseSub:'Locked timer — cannot be skipped',
-    flashcardsLabel:'Enable Flashcards phase',
-    flashcardsSub:'Inserted after the last reading phase',
+    flashcardsLabel:'Enable Flashcards phase', flashcardsSub:'Inserted after the last reading phase',
     flashcardsDefault:'Flashcards',
     minUnit:'min', secUnit:'sec',
-    advLabel:'Advanced audio settings',
+    advLabel:'Advanced audio settings', advDurLabel:'Adjust phase durations',
     beepCount:'Warning beeps', beepCountHint:'Number of beeps before each phase ends',
-    beepWarn:'Early warning', beepWarnHint:'Seconds before end of each phase to sound beeps',
+    beepWarn:'Early warning', beepWarnHint:'Seconds before phase end to sound beeps',
     startBtn:'▶  START CYCLES',
-    offlineNote:'To use offline on iPhone: Safari → Share → Add to Home Screen.',
-    alert90:'⚠  Total study time exceeds 90 min per cycle. Consider spreading across more sessions.',
+    offlineNote:'Offline on iPhone: Safari → Share → Add to Home Screen.',
+    a2Note:'After the Quiz, a panel will ask for your error count and show a proceed/repeat decision.',
+    alert90:'⚠  Study time exceeds 90 min per cycle. Consider splitting into more sessions.',
     relaxBtn:'▶  Relax with lofi music',
     overlayTag:'BREAK', overlayNextLabel:'UP NEXT',
     cycleLabel:'CYCLE', phaseLabel:'PHASE', phaseLabelOf:'OF',
@@ -936,26 +1342,49 @@ const T = {
     skip:'skip phase →', configure:'← settings',
     startTimer:'▶  START', pauseTimer:'⏸  PAUSE', continueTimer:'▶  RESUME',
     doneBtn:'✓  DONE', statusPaused:'Paused',
-    statusCycle:'🔄 Cycle {c} of {t} started',
-    congrats:'Congratulations! All cycles complete. 🏆',
+    statusCycle:'🔄 Cycle {c} of {t} started', congrats:'Congratulations! All cycles complete. 🏆',
+    videoPhase:'Video', readingPhase:'Reading', quizPhase:'Quiz',
+    analysisPhase:'Error Analysis', breakPhase:'Break',
+    videoHint:'Watch the selected video', readingHint:'Directed reading in Sybex',
+    quizHint:'5 questions on CISSPrep.net', analysisHint:'Analysis in NotebookLM — focus on error pattern',
+    breakHint:'Cognitive rest — no screens', analysisAuto:'10 min × errors',
+    analysisHintAdv:'Fixed: 10 min per error (automatic)',
+    errorTag:'QUIZ COMPLETE', errorQuestion:'How many errors out of 5 questions?',
+    errorConfirm:'Continue →',
+    decisionGoodTitle:'✓  Proceed to next topic',
+    decisionGoodSub:'0–1 errors: adequate domain pattern. Managerial frame is solid.',
+    decisionWarnTitle:'⚠  Proceed, but flag for review',
+    decisionWarnSub:'2–3 errors: advance to next topic and schedule spaced review tomorrow.',
+    decisionBadTitle:'✕  Repeat this cycle',
+    decisionBadSub:'4–5 errors: conceptual frame not consolidated. Use a different video and restart.',
+    analysisStatus:'Error analysis ({n}×10min) — NotebookLM',
     phaseNames:['Scan Reading','Active Reading','Recall Reading','Rest'],
   },
   'fr': {
-    appTitle:"Cycles d'Étude", settings:'Paramètres',
-    repetitions:'Répétitions', repHint:'Combien de fois répéter le cycle complet',
-    numCycles:'Nbre de cycles', cycleSub:'Balayage → Active → Rappel → Repos',
+    appTitle:"Cycles d'Étude", chooseMode:'Choisir le mode',
+    modeFreeName:'Cycles libres', modeFreeSub:'Configurer phases personnalisées, répétitions et pauses',
+    modeFreeSeq:'Phases personnalisables · Flashcards · Pause entre phases',
+    modeA2Name:'Approche 2 — CISSP', modeA2Sub:'Protocole structuré avec analyse des erreurs et décision par cycle',
+    modeA2Seq:'Vidéo · Lecture · Quiz · Analyse · Pause',
+    backMode:'← mode', settings:'Paramètres',
+    repetitions:'Répétitions', repHint:'Combien de fois répéter le cycle',
+    numCycles:'Nbre de cycles', freeCycleSub:'Balayage → Active → Rappel → Repos',
+    a2CycleSub:'Vidéo → Lecture → Quiz → Analyse → Pause',
+    sessionLabel:'Séance', sessionHint:'Répétitions du cycle complet',
+    estimateLabel:'Durée estimée par cycle',
     phases:'Phases', phasesHint:'Nom et durée en minutes',
-    shortPauseLabel:'Activer une pause de 60 sec entre les phases',
+    a2PhasesHint:'Protocole structuré',
+    shortPauseLabel:'Activer pause de 60 sec entre les phases',
     shortPauseSub:'Minuterie verrouillée — ne peut être ignorée',
-    flashcardsLabel:'Activer la phase Flashcards',
-    flashcardsSub:'Insérée après la dernière lecture',
+    flashcardsLabel:'Activer la phase Flashcards', flashcardsSub:'Insérée après la dernière lecture',
     flashcardsDefault:'Flashcards',
     minUnit:'min', secUnit:'sec',
-    advLabel:'Paramètres audio avancés',
+    advLabel:'Paramètres audio avancés', advDurLabel:'Ajuster les durées des phases',
     beepCount:"Bips d'alerte", beepCountHint:'Nombre de bips avant la fin de chaque phase',
-    beepWarn:'Alerte anticipée', beepWarnHint:'Secondes avant la fin de chaque phase pour les bips',
+    beepWarn:'Alerte anticipée', beepWarnHint:'Secondes avant la fin pour les bips',
     startBtn:'▶  DÉMARRER',
-    offlineNote:"Pour hors ligne sur iPhone : Safari → Partager → Sur l'écran d'accueil.",
+    offlineNote:"Hors ligne sur iPhone : Safari → Partager → Sur l'écran d'accueil.",
+    a2Note:"Après le Quiz, un panneau demandera le nombre d'erreurs et indiquera la décision.",
     alert90:'⚠  Le temps dépasse 90 min par cycle. Répartissez en plusieurs sessions.',
     relaxBtn:'▶  Musique lofi relaxante',
     overlayTag:'PAUSE', overlayNextLabel:'ENSUITE',
@@ -964,26 +1393,49 @@ const T = {
     skip:'sauter →', configure:'← réglages',
     startTimer:'▶  DÉMARRER', pauseTimer:'⏸  PAUSE', continueTimer:'▶  REPRENDRE',
     doneBtn:'✓  TERMINÉ', statusPaused:'En pause',
-    statusCycle:'🔄 Cycle {c} sur {t} démarré',
-    congrats:'Félicitations ! Tous les cycles terminés. 🏆',
+    statusCycle:'🔄 Cycle {c} sur {t} démarré', congrats:'Félicitations ! Tous les cycles terminés. 🏆',
+    videoPhase:'Vidéo', readingPhase:'Lecture', quizPhase:'Quiz',
+    analysisPhase:"Analyse d'erreurs", breakPhase:'Pause',
+    videoHint:'Regarder la vidéo sélectionnée', readingHint:'Lecture dirigée dans Sybex',
+    quizHint:'5 questions sur CISSPrep.net', analysisHint:"Analyse dans NotebookLM — focus sur le type d'erreur",
+    breakHint:'Repos cognitif — sans écran', analysisAuto:'10 min × erreurs',
+    analysisHintAdv:'Fixe : 10 min par erreur (automatique)',
+    errorTag:'QUIZ TERMINÉ', errorQuestion:'Combien d\'erreurs sur 5 questions ?',
+    errorConfirm:'Continuer →',
+    decisionGoodTitle:'✓  Passer au sujet suivant',
+    decisionGoodSub:'0–1 erreur : profil de domaine adéquat. Cadre managérial solide.',
+    decisionWarnTitle:'⚠  Continuer, mais marquer pour révision',
+    decisionWarnSub:'2–3 erreurs : avancez et programmez une révision espacée demain.',
+    decisionBadTitle:'✕  Recommencer ce cycle',
+    decisionBadSub:"4–5 erreurs : cadre conceptuel non consolidé. Utilisez une autre vidéo.",
+    analysisStatus:'Analyse ({n}×10min) — NotebookLM',
     phaseNames:['Lecture balayage','Lecture active','Rappel','Repos'],
   },
   'es': {
-    appTitle:'Ciclos de Estudio', settings:'Configuración',
+    appTitle:'Ciclos de Estudio', chooseMode:'Elige el modo',
+    modeFreeName:'Ciclos Libres', modeFreeSub:'Configura fases personalizadas, repeticiones y opciones de pausa',
+    modeFreeSeq:'Fases personalizables · Flashcards · Pausa entre fases',
+    modeA2Name:'Enfoque 2 — CISSP', modeA2Sub:'Protocolo estructurado con análisis de errores y decisión por ciclo',
+    modeA2Seq:'Vídeo · Lectura · Simulacro · Análisis · Pausa',
+    backMode:'← modo', settings:'Configuración',
     repetitions:'Repeticiones', repHint:'Cuántas veces repetir el ciclo completo',
-    numCycles:'Nº de ciclos', cycleSub:'Escaneo → Activa → Repaso → Descanso',
+    numCycles:'Nº de ciclos', freeCycleSub:'Escaneo → Activa → Repaso → Descanso',
+    a2CycleSub:'Vídeo → Lectura → Simulacro → Análisis → Pausa',
+    sessionLabel:'Sesión', sessionHint:'Repeticiones del ciclo completo',
+    estimateLabel:'Duración estimada por ciclo',
     phases:'Fases', phasesHint:'Nombre y duración en minutos',
+    a2PhasesHint:'Protocolo estructurado',
     shortPauseLabel:'Activar pausa de 60 seg entre fases',
     shortPauseSub:'Temporizador bloqueado — no se puede omitir',
-    flashcardsLabel:'Activar fase de Flashcards',
-    flashcardsSub:'Insertada después de la última lectura',
+    flashcardsLabel:'Activar fase de Flashcards', flashcardsSub:'Insertada después de la última lectura',
     flashcardsDefault:'Flashcards',
     minUnit:'min', secUnit:'seg',
-    advLabel:'Configuración avanzada de audio',
+    advLabel:'Configuración avanzada de audio', advDurLabel:'Ajustar duraciones de fases',
     beepCount:'Pitidos de aviso', beepCountHint:'Cantidad de pitidos antes del fin de cada fase',
-    beepWarn:'Aviso anticipado', beepWarnHint:'Segundos antes del fin de cada fase para pitidos',
+    beepWarn:'Aviso anticipado', beepWarnHint:'Segundos antes del fin para pitidos',
     startBtn:'▶  INICIAR CICLOS',
-    offlineNote:'Para usar sin conexión en iPhone: Safari → Compartir → Añadir a inicio.',
+    offlineNote:'Sin conexión en iPhone: Safari → Compartir → Añadir a inicio.',
+    a2Note:'Tras el Simulacro, un panel pedirá el nº de errores e indicará la decisión de seguir o repetir.',
     alert90:'⚠  El tiempo supera 90 min por ciclo. Distribuye en más sesiones.',
     relaxBtn:'▶  Relajarse con música lofi',
     overlayTag:'PAUSA', overlayNextLabel:'A CONTINUACIÓN',
@@ -992,482 +1444,654 @@ const T = {
     skip:'saltar fase →', configure:'← configurar',
     startTimer:'▶  INICIAR', pauseTimer:'⏸  PAUSAR', continueTimer:'▶  CONTINUAR',
     doneBtn:'✓  COMPLETO', statusPaused:'Pausado',
-    statusCycle:'🔄 Ciclo {c} de {t} iniciado',
-    congrats:'¡Felicidades! Todos los ciclos completos. 🏆',
-    phaseNames:['Lectura de escaneo','Lectura activa','Lectura de repaso','Descanso'],
+    statusCycle:'🔄 Ciclo {c} de {t} iniciado', congrats:'¡Felicidades! Todos los ciclos completos. 🏆',
+    videoPhase:'Vídeo', readingPhase:'Lectura', quizPhase:'Simulacro',
+    analysisPhase:'Análisis de Errores', breakPhase:'Pausa',
+    videoHint:'Ver el vídeo seleccionado', readingHint:'Lectura dirigida en Sybex',
+    quizHint:'5 preguntas en CISSPrep.net', analysisHint:'Análisis en NotebookLM — enfoca el patrón del error',
+    breakHint:'Descanso cognitivo — sin pantallas', analysisAuto:'10 min × errores',
+    analysisHintAdv:'Fijo: 10 min por error (automático)',
+    errorTag:'SIMULACRO COMPLETADO', errorQuestion:'¿Cuántos errores en 5 preguntas?',
+    errorConfirm:'Continuar →',
+    decisionGoodTitle:'✓  Avanza al siguiente tema',
+    decisionGoodSub:'0–1 errores: perfil de dominio adecuado. Marco gerencial consolidado.',
+    decisionWarnTitle:'⚠  Avanza, pero marca para revisión',
+    decisionWarnSub:'2–3 errores: avanza y programa revisión espaciada mañana.',
+    decisionBadTitle:'✕  Repite este ciclo',
+    decisionBadSub:'4–5 errores: marco conceptual no consolidado. Usa un vídeo diferente.',
+    analysisStatus:'Análisis ({n}×10min) — NotebookLM',
+    phaseNames:['Lectura de escaneo','Lectura activa','Repaso','Descanso'],
   },
 };
 
 let lang = 'pt-BR';
-
-function t(k) {
-  return (T[lang] && T[lang][k] !== undefined) ? T[lang][k] : (T['pt-BR'][k] || k);
-}
+function t(k) { return (T[lang]&&T[lang][k]!==undefined)?T[lang][k]:(T['pt-BR'][k]||k); }
 
 function setLang(l) {
   lang = l;
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-lang') === l);
-  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang')===l));
   applyLang();
 }
 
 function applyLang() {
   document.title = t('appTitle');
-  // Update all data-i18n elements (skip arrays)
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const val = t(key);
-    if (typeof val === 'string') el.textContent = val;
+    const k = el.getAttribute('data-i18n');
+    const v = t(k);
+    if (typeof v === 'string') el.textContent = v;
   });
-  // Update phase name inputs to translated defaults
-  DEFAULTS.forEach((_, i) => {
-    const el = document.getElementById('inp-nome-' + i);
+  DEFAULTS.forEach((_,i) => {
+    const el = document.getElementById('inp-nome-'+i);
     if (el) el.value = T[lang].phaseNames[i];
   });
-  // Update btn-main text only if timer not yet started
-  if (!started) {
-    document.getElementById('btn-main').textContent = t('startTimer');
-  }
+  if (!started) document.getElementById('btn-main').textContent = t('startTimer');
+  // Rebuild error overlay buttons (they have no data-i18n)
+  buildErrorButtons();
+  // Refresh A2 phase visual labels in config
+  syncA2Labels();
 }
 
-// ════════════════════════════════════════════
-//  DEFAULTS
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+//  DEFAULTS — FREE MODE
+// ══════════════════════════════════════════════════
 const DEFAULTS = [
-  { nome:'Leitura de Varredura', dur:20, cor:'var(--c0)', pauseEligible:true  },
-  { nome:'Leitura Ativa',        dur:25, cor:'var(--c1)', pauseEligible:true  },
-  { nome:'Leitura de Recall',    dur:10, cor:'var(--c2)', pauseEligible:false },
-  { nome:'Descanso',             dur: 5, cor:'var(--c3)', pauseEligible:false },
+  { dur:20, cor:'var(--c0)', pauseEligible:true  },
+  { dur:25, cor:'var(--c1)', pauseEligible:true  },
+  { dur:10, cor:'var(--c2)', pauseEligible:false },
+  { dur: 5, cor:'var(--c3)', pauseEligible:false },
 ];
 
-const CIRCUM = 2 * Math.PI * 119; // r=119 → ≈747.7
+const CIRCUM = 2 * Math.PI * 119; // ≈747.7
 
-// ════════════════════════════════════════════
-//  BUILD SETTINGS ROWS
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+//  MODE STATE
+// ══════════════════════════════════════════════════
+let currentMode = 'free'; // 'free' | 'a2'
+
+function selectMode(m) {
+  currentMode = m;
+  showScreen(m === 'free' ? 'config' : 'config-a2');
+}
+
+function goToMode() {
+  hardStop();
+  clearPauseOverlay();
+  showScreen('mode');
+}
+
+function goBackFromTimer() {
+  hardStop();
+  clearPauseOverlay();
+  showScreen(currentMode === 'free' ? 'config' : 'config-a2');
+}
+
+// ══════════════════════════════════════════════════
+//  BUILD FREE MODE PHASE ROWS
+// ══════════════════════════════════════════════════
 (function buildFaseRows() {
   const block    = document.getElementById('fases-block');
   const sentinel = document.getElementById('fases-sentinel');
-  const dotHex   = ['#50e090','#5ab8ff','#c864f0','#ff7c40'];
-
-  DEFAULTS.forEach((f, i) => {
+  const hex      = ['#50e090','#5ab8ff','#c864f0','#ff7c40'];
+  DEFAULTS.forEach((f,i) => {
     const row = document.createElement('div');
     row.className = 'phase-row';
     row.innerHTML =
-      `<div class="phase-dot-cfg" style="background:${dotHex[i]};box-shadow:0 0 6px ${dotHex[i]}66"></div>` +
-      `<input class="phase-name-input" type="text" id="inp-nome-${i}"` +
-      ` value="${T['pt-BR'].phaseNames[i]}" maxlength="40" autocomplete="off" autocorrect="off">` +
-      `<div class="dur-group">` +
-      `<input class="dur-input" type="number" id="inp-dur-${i}"` +
-      ` value="${f.dur}" min="1" max="180" inputmode="numeric"` +
-      // Only study phases (0,1,2) count toward the 90-min alert
-      (i < 3 ? ` oninput="updateTimeAlert()" onchange="updateTimeAlert()"` : '') +
-      `><span class="dur-unit">min</span>` +
-      `</div>`;
+      `<div class="phase-dot-cfg" style="background:${hex[i]};box-shadow:0 0 6px ${hex[i]}66"></div>`+
+      `<input class="phase-name-input" type="text" id="inp-nome-${i}" value="${T['pt-BR'].phaseNames[i]}" maxlength="40" autocomplete="off" autocorrect="off">`+
+      `<div class="dur-group">`+
+      `<input class="dur-input" type="number" id="inp-dur-${i}" value="${f.dur}" min="1" max="180" inputmode="numeric"`+
+      (i<3?` oninput="updateTimeAlert()" onchange="updateTimeAlert()"`:'')+'>'+ 
+      `<span class="dur-unit">min</span></div>`;
     block.insertBefore(row, sentinel);
   });
-  // Remove sentinel
   sentinel.remove();
 })();
 
-// ════════════════════════════════════════════
-//  CONFIG CONTROLS
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+//  BUILD ERROR OVERLAY BUTTONS
+// ══════════════════════════════════════════════════
+function buildErrorButtons() {
+  const row = document.getElementById('error-num-row');
+  row.innerHTML = '';
+  for (let n = 0; n <= 5; n++) {
+    const btn = document.createElement('button');
+    btn.className = 'error-num-btn';
+    btn.textContent = n;
+    btn.onclick = () => selectErrorCount(n);
+    btn.id = 'err-btn-' + n;
+    row.appendChild(btn);
+  }
+}
+buildErrorButtons();
+
+// ══════════════════════════════════════════════════
+//  CONFIG CONTROLS — FREE MODE
+// ══════════════════════════════════════════════════
 function clampField(el, min, max) {
   const v = parseInt(el.value);
   if (!isNaN(v)) el.value = Math.min(max, Math.max(min, v));
 }
 function changeCiclos(d) {
   const el = document.getElementById('inp-ciclos');
-  el.value = Math.min(10, Math.max(1, (parseInt(el.value) || 1) + d));
+  el.value = Math.min(10, Math.max(1,(parseInt(el.value)||1)+d));
 }
-function changeAdv(id, d) {
-  const el = document.getElementById('inp-' + id);
-  el.value = Math.min(+el.max, Math.max(+el.min, (parseInt(el.value) || +el.min) + d));
+function changeAdv(id,d) {
+  const el = document.getElementById('inp-'+id);
+  el.value = Math.min(+el.max,Math.max(+el.min,(parseInt(el.value)||+el.min)+d));
 }
 function toggleAdv() {
   document.getElementById('adv-toggle').classList.toggle('open');
   document.getElementById('adv-body').classList.toggle('open');
 }
-
-/* Flashcards toggle → show/hide duration */
 function onFlashcardsToggle() {
   const on = document.getElementById('inp-flashcards').checked;
   document.getElementById('fc-dur-group').style.visibility = on ? 'visible' : 'hidden';
   updateTimeAlert();
 }
-
-/* 90-min alert */
 function calcStudyMinutes() {
   let total = 0;
-  for (let i = 0; i < 3; i++) { // phases 0,1,2 (study only, not Descanso)
-    total += Math.max(1, parseInt(document.getElementById('inp-dur-' + i).value) || DEFAULTS[i].dur);
-  }
-  if (document.getElementById('inp-flashcards').checked) {
-    total += Math.max(5, parseInt(document.getElementById('inp-flashcards-dur').value) || 15);
-  }
+  for (let i=0;i<3;i++) total += Math.max(1,parseInt(document.getElementById('inp-dur-'+i).value)||DEFAULTS[i].dur);
+  if (document.getElementById('inp-flashcards').checked)
+    total += Math.max(5,parseInt(document.getElementById('inp-flashcards-dur').value)||15);
   return total;
 }
-
 function updateTimeAlert() {
-  const el = document.getElementById('alert-90');
-  el.classList.toggle('visible', calcStudyMinutes() > 90);
+  document.getElementById('alert-90').classList.toggle('visible', calcStudyMinutes()>90);
 }
+function openRelax() { window.open('https://www.youtube.com/watch?v=jfKfPfyJRdk','_blank'); }
 
-function openRelax() {
-  window.open('https://www.youtube.com/watch?v=jfKfPfyJRdk', '_blank');
-}
-
-/* Start from config */
-function startFromConfig() {
-  const shortPause  = document.getElementById('inp-short-pause').checked;
-  const flashcards  = document.getElementById('inp-flashcards').checked;
-  const fcDurMins   = Math.max(5, parseInt(document.getElementById('inp-flashcards-dur').value) || 15);
-  const fcName      = T[lang].flashcardsDefault || 'Flashcards';
-
-  // Build phase list from DEFAULTS
-  CFG.fases = DEFAULTS.map((f, i) => ({
-    nome:       (document.getElementById('inp-nome-' + i).value.trim()) || T[lang].phaseNames[i],
-    dur:        Math.max(1, parseInt(document.getElementById('inp-dur-' + i).value) || f.dur) * 60,
+function startFromConfigFree() {
+  const shortPause = document.getElementById('inp-short-pause').checked;
+  const flashcards = document.getElementById('inp-flashcards').checked;
+  const fcDur      = Math.max(5,parseInt(document.getElementById('inp-flashcards-dur').value)||15);
+  CFG.fases = DEFAULTS.map((f,i) => ({
+    nome:       (document.getElementById('inp-nome-'+i).value.trim()) || T[lang].phaseNames[i],
+    dur:        Math.max(1,parseInt(document.getElementById('inp-dur-'+i).value)||f.dur)*60,
     cor:        f.cor,
-    // pauseAfter: true if shortPause enabled AND this phase is pause-eligible
-    // Phase 2 (Recall) also gets pauseAfter if flashcards enabled AND shortPause enabled
-    pauseAfter: shortPause && (f.pauseEligible || (i === 2 && flashcards)),
+    pauseAfter: shortPause && (f.pauseEligible || (i===2 && flashcards)),
+    hint:       null,
+    a2type:     null,
   }));
-
-  // Insert flashcards phase before Descanso (index 3)
   if (flashcards) {
-    CFG.fases.splice(3, 0, {
-      nome:       fcName,
-      dur:        fcDurMins * 60,
-      cor:        'var(--c4)',
-      pauseAfter: false,
+    CFG.fases.splice(3,0,{
+      nome:t('flashcardsDefault'), dur:fcDur*60, cor:'var(--c4)', pauseAfter:false, hint:null, a2type:null
     });
   }
+  CFG.ciclos    = Math.max(1,parseInt(document.getElementById('inp-ciclos').value)||1);
+  CFG.beepCount = Math.max(1,parseInt(document.getElementById('inp-beep-count').value)||3);
+  CFG.beepWarn  = Math.max(5,parseInt(document.getElementById('inp-beep-warn').value)||60);
+  launchTimer();
+}
 
-  CFG.ciclos    = Math.max(1, parseInt(document.getElementById('inp-ciclos').value) || 1);
-  CFG.beepCount = Math.max(1, parseInt(document.getElementById('inp-beep-count').value) || 3);
-  CFG.beepWarn  = Math.max(5, parseInt(document.getElementById('inp-beep-warn').value) || 60);
+// ══════════════════════════════════════════════════
+//  CONFIG CONTROLS — A2 MODE
+// ══════════════════════════════════════════════════
+function changeA2Ciclos(d) {
+  const el = document.getElementById('inp-a2-ciclos');
+  el.value = Math.min(6,Math.max(1,(parseInt(el.value)||1)+d));
+  updateA2Estimate();
+}
+function toggleA2Adv() {
+  document.getElementById('a2-adv-toggle').classList.toggle('open');
+  document.getElementById('a2-adv-body').classList.toggle('open');
+}
+function syncA2Labels() {
+  const v = parseInt(document.getElementById('inp-a2-video').value)   || 5;
+  const r = parseInt(document.getElementById('inp-a2-reading').value) || 15;
+  const q = parseInt(document.getElementById('inp-a2-quiz').value)    || 10;
+  const b = parseInt(document.getElementById('inp-a2-break').value)   || 5;
+  document.getElementById('a2-lbl-video').textContent   = v;
+  document.getElementById('a2-lbl-reading').textContent = r;
+  document.getElementById('a2-lbl-quiz').textContent    = q;
+  document.getElementById('a2-lbl-break').textContent   = b;
+}
+function updateA2Estimate() {
+  const v = parseInt(document.getElementById('inp-a2-video').value)   || 5;
+  const r = parseInt(document.getElementById('inp-a2-reading').value) || 15;
+  const q = parseInt(document.getElementById('inp-a2-quiz').value)    || 10;
+  const b = parseInt(document.getElementById('inp-a2-break').value)   || 5;
+  const min = v + r + q + b;         // 0 errors
+  const max = v + r + q + 5*10 + b; // 5 errors
+  document.getElementById('a2-estimate').textContent = min+'–'+max+' min';
+}
+updateA2Estimate();
 
+function startFromConfigA2() {
+  const vid  = Math.max(3, parseInt(document.getElementById('inp-a2-video').value)  ||5);
+  const read = Math.max(5, parseInt(document.getElementById('inp-a2-reading').value)||15);
+  const quiz = Math.max(5, parseInt(document.getElementById('inp-a2-quiz').value)   ||10);
+  const brk  = Math.max(2, parseInt(document.getElementById('inp-a2-break').value)  ||5);
+
+  CFG.fases = [
+    { nome:t('videoPhase'),    dur:vid*60,  cor:'var(--c0)', pauseAfter:false, a2type:'video',    hint:t('videoHint') },
+    { nome:t('readingPhase'),  dur:read*60, cor:'var(--c1)', pauseAfter:false, a2type:'reading',  hint:t('readingHint') },
+    { nome:t('quizPhase'),     dur:quiz*60, cor:'var(--c2)', pauseAfter:false, a2type:'quiz',     hint:t('quizHint') },
+    { nome:t('analysisPhase'), dur:0,       cor:'var(--c3)', pauseAfter:false, a2type:'analysis', hint:t('analysisHint') },
+    { nome:t('breakPhase'),    dur:brk*60,  cor:'var(--cr)', pauseAfter:false, a2type:'break',    hint:t('breakHint') },
+  ];
+  CFG.ciclos    = Math.max(1,parseInt(document.getElementById('inp-a2-ciclos').value)||1);
+  CFG.beepCount = 3;
+  CFG.beepWarn  = 60;
+  launchTimer();
+}
+
+// ══════════════════════════════════════════════════
+//  CFG
+// ══════════════════════════════════════════════════
+const CFG = { fases:[], ciclos:1, beepCount:3, beepWarn:60 };
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function launchTimer() {
   showScreen('timer');
   resetTimer();
   previewFirstPhase();
 }
 
-function goToConfig() {
-  hardStop();
-  clearOverlay();
-  showScreen('config');
-}
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-// ════════════════════════════════════════════
-//  CFG (active config)
-// ════════════════════════════════════════════
-const CFG = { fases:[], ciclos:1, beepCount:3, beepWarn:60 };
-
-// ════════════════════════════════════════════
-//  ÁUDIO — iOS unlock
-// ════════════════════════════════════════════
-let actx = null, audioOK = false;
+// ══════════════════════════════════════════════════
+//  AUDIO — iOS unlock
+// ══════════════════════════════════════════════════
+let actx=null, audioOK=false;
 
 function unlockAudio() {
   if (audioOK) return;
   try {
-    actx = new (window.AudioContext || window.webkitAudioContext)();
-    const buf = actx.createBuffer(1,1,22050);
-    const src = actx.createBufferSource();
-    src.buffer = buf; src.connect(actx.destination); src.start(0);
-    const ok = () => { audioOK = true; };
-    actx.state === 'suspended' ? actx.resume().then(ok) : ok();
+    actx = new (window.AudioContext||window.webkitAudioContext)();
+    const buf=actx.createBuffer(1,1,22050), src=actx.createBufferSource();
+    src.buffer=buf; src.connect(actx.destination); src.start(0);
+    const ok=()=>{ audioOK=true; };
+    actx.state==='suspended'?actx.resume().then(ok):ok();
   } catch(e) {}
 }
-
-function tone(freq, ts, dur, vol) {
-  if (!actx || !audioOK) return;
+function tone(freq,ts,dur,vol) {
+  if (!actx||!audioOK) return;
   try {
-    const o = actx.createOscillator(), g = actx.createGain();
+    const o=actx.createOscillator(),g=actx.createGain();
     o.connect(g); g.connect(actx.destination);
-    o.type = 'sine'; o.frequency.value = freq;
-    g.gain.setValueAtTime(0, ts);
-    g.gain.linearRampToValueAtTime(vol || 0.35, ts + 0.015);
-    g.gain.exponentialRampToValueAtTime(0.0001, ts + dur);
-    o.start(ts); o.stop(ts + dur + 0.03);
+    o.type='sine'; o.frequency.value=freq;
+    g.gain.setValueAtTime(0,ts);
+    g.gain.linearRampToValueAtTime(vol||.35,ts+.015);
+    g.gain.exponentialRampToValueAtTime(.0001,ts+dur);
+    o.start(ts); o.stop(ts+dur+.03);
   } catch(e) {}
 }
-
-function playBeeps(n, freq) {
+function playBeeps(n,freq) {
   if (!actx) return;
-  const ts = actx.currentTime;
-  for (let i = 0; i < n; i++) tone(freq || 880, ts + i * 0.42, 0.28, 0.40);
+  const ts=actx.currentTime;
+  for (let i=0;i<n;i++) tone(freq||880,ts+i*.42,.28,.40);
 }
-
 function playBell() {
   if (!actx) return;
-  const ts = actx.currentTime;
-  [[523.25,0.00,0.38],[659.25,0.08,0.32],[783.99,0.16,0.26],[1046.5,0.26,0.18]]
-    .forEach(([f,dt,v]) => tone(f, ts + dt, 3.5, v));
+  const ts=actx.currentTime;
+  [[523.25,.00,.38],[659.25,.08,.32],[783.99,.16,.26],[1046.5,.26,.18]]
+    .forEach(([f,dt,v])=>tone(f,ts+dt,3.5,v));
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 //  TIMER STATE
-// ════════════════════════════════════════════
-let tid = null, phIdx = 0, cyc = 1;
-let tLeft = 0, tTotal = 0, running = false, done = false, started = false;
-let bFired = false;
+// ══════════════════════════════════════════════════
+let tid=null, phIdx=0, cyc=1;
+let tLeft=0, tTotal=0, running=false, done=false, started=false, bFired=false;
 
-// Overlay state
-let isPausing = false, overlayTid = null, overlayLeft = 0, overlayCallback = null;
+// Pause overlay state (free mode)
+let isPausing=false, overlayTid=null, overlayLeft=0, overlayCallback=null;
 
-function hardStop() {
-  clearInterval(tid); tid = null; running = false;
-}
+// A2 error state
+let isErrorInput=false, pendingErrorCount=-1, pendingA2Decision=null;
+
+function hardStop() { clearInterval(tid); tid=null; running=false; }
 
 function resetTimer() {
   hardStop();
-  clearOverlay();
-  phIdx = 0; cyc = 1;
-  tLeft = 0; tTotal = 0; done = false; started = false; bFired = false;
-  document.getElementById('btn-main').disabled    = false;
-  document.getElementById('btn-main').textContent = t('startTimer');
+  clearPauseOverlay();
+  clearErrorOverlay();
+  phIdx=0; cyc=1;
+  tLeft=0; tTotal=0; done=false; started=false; bFired=false;
+  pendingErrorCount=-1; pendingA2Decision=null;
+  const btn = document.getElementById('btn-main');
+  btn.disabled = false;
+  btn.textContent = t('startTimer');
   document.getElementById('btn-skip').style.display = '';
+  // Show correct dots container
+  document.getElementById('dots').style.display    = currentMode==='a2' ? 'none' : '';
+  document.getElementById('dots-a2').style.display = currentMode==='a2' ? '' : 'none';
 }
 
 function previewFirstPhase() {
-  const f = CFG.fases[0];
-  tLeft = f.dur; tTotal = f.dur;
-  render();
+  const f=CFG.fases[0]; tLeft=f.dur; tTotal=f.dur; render();
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 //  DISPLAY
-// ════════════════════════════════════════════
-function fmt(s) {
-  return String(Math.floor(s / 60)).padStart(2,'0') + ':' + String(s % 60).padStart(2,'0');
-}
+// ══════════════════════════════════════════════════
+function fmt(s) { return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 
 function resolveVar(v) {
-  const name = v.match(/var\((.+)\)/)?.[1];
+  const name=v.match(/var\((.+)\)/)?.[1];
   if (!name) return v;
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || v;
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()||v;
 }
-
-function setColor(cssColor) {
-  document.documentElement.style.setProperty('--phase-color', cssColor);
-  const hex = resolveVar(cssColor);
-  const arc = document.getElementById('arc');
-  arc.style.stroke = hex;
-  arc.style.filter = `drop-shadow(0 0 5px ${hex})`;
+function setColor(css) {
+  document.documentElement.style.setProperty('--phase-color',css);
+  const hex=resolveVar(css);
+  const arc=document.getElementById('arc');
+  arc.style.stroke=hex;
+  arc.style.filter=`drop-shadow(0 0 5px ${hex})`;
 }
-
-function setStatus(msg, hi) {
-  const el = document.getElementById('st');
-  el.textContent = msg || '\u00a0';
-  el.className = 'status' + (hi ? ' hi' : '');
+function setStatus(msg,cls) {
+  const el=document.getElementById('st');
+  el.textContent=msg||'\u00a0';
+  el.className='status'+(cls?' '+cls:'');
 }
 
 function buildDots() {
-  const c = document.getElementById('dots');
-  c.innerHTML = '';
-  CFG.fases.forEach((_, i) => {
-    const d = document.createElement('div');
-    let cls = 'dot';
-    if (i < phIdx)             cls += ' done';
-    else if (i === phIdx && !done) cls += ' active';
-    d.className = cls;
-    c.appendChild(d);
+  // Free mode — simple dots
+  const c=document.getElementById('dots');
+  c.innerHTML='';
+  if (currentMode!=='free') return;
+  CFG.fases.forEach((_,i)=>{
+    const d=document.createElement('div');
+    let cls='dot dot-normal';
+    if (i<phIdx) cls+=' done'; else if(i===phIdx&&!done) cls+=' active';
+    d.className=cls; c.appendChild(d);
+  });
+}
+
+function buildDotsA2() {
+  const c=document.getElementById('dots-a2');
+  c.innerHTML='';
+  if (currentMode!=='a2') return;
+  // Colors per phase
+  const dotHex=['#50e090','#5ab8ff','#c864f0','#ff7c40','#40d8d8'];
+  CFG.fases.forEach((f,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='dot-a2-item'+(i===phIdx&&!done?' active':'');
+
+    const circle=document.createElement('div');
+    circle.className='dot-a2-circle';
+    if (i<phIdx) circle.classList.add('done');
+    else if(i===phIdx&&!done) { circle.classList.add('active'); circle.style.background=dotHex[i]||'var(--phase-color)'; circle.style.borderColor=dotHex[i]||'var(--phase-color)'; }
+
+    const label=document.createElement('div');
+    label.className='dot-a2-label';
+    label.textContent=f.nome.split(' ')[0]; // first word only
+    wrap.appendChild(circle); wrap.appendChild(label);
+    c.appendChild(wrap);
   });
 }
 
 function render() {
-  const clk   = document.getElementById('clock');
-  const lbl   = document.getElementById('lbl');
-  const pname = document.getElementById('pname');
-  const psub  = document.getElementById('psub');
-  const badge = document.getElementById('cycle-badge');
+  const clk=document.getElementById('clock');
+  const lbl=document.getElementById('lbl');
+  const pname=document.getElementById('pname');
+  const psub=document.getElementById('psub');
+  const badge=document.getElementById('cycle-badge');
 
-  badge.innerHTML = CFG.ciclos > 1 && !done
+  badge.innerHTML = CFG.ciclos>1&&!done
     ? `${t('cycleLabel')} <span>${cyc} / ${CFG.ciclos}</span>` : '&nbsp;';
 
-  clk.textContent = done ? '00:00' : fmt(tLeft);
-  clk.className = 'clock';
+  clk.textContent = done?'00:00':fmt(tLeft);
+  clk.className='clock';
   if (!done) {
-    if      (tLeft <= 10)            clk.classList.add('critical');
-    else if (tLeft <= CFG.beepWarn)  clk.classList.add('warning');
+    if      (tLeft<=10)           clk.classList.add('critical');
+    else if (tLeft<=CFG.beepWarn) clk.classList.add('warning');
   }
 
   if (done) {
-    setColor(CFG.fases[CFG.fases.length - 1].cor);
+    setColor(CFG.fases[CFG.fases.length-1].cor);
     lbl.textContent   = t('complete');
     pname.textContent = t('completeName');
     psub.textContent  = t('completeSub');
   } else {
-    const f = CFG.fases[phIdx];
+    const f=CFG.fases[phIdx];
     setColor(f.cor);
-    lbl.textContent   = `${t('phaseLabel')} ${phIdx + 1} ${t('phaseLabelOf')} ${CFG.fases.length}`;
+    lbl.textContent   = `${t('phaseLabel')} ${phIdx+1} ${t('phaseLabelOf')} ${CFG.fases.length}`;
     pname.textContent = f.nome;
-    psub.textContent  = fmt(f.dur);
+    // A2 mode shows contextual hint; free mode shows total time
+    psub.textContent  = (currentMode==='a2'&&f.hint) ? f.hint : fmt(f.dur);
   }
 
   buildDots();
-  document.getElementById('arc').style.strokeDashoffset = tTotal > 0
-    ? CIRCUM * (1 - tLeft / tTotal) : 0;
+  buildDotsA2();
+  document.getElementById('arc').style.strokeDashoffset = tTotal>0 ? CIRCUM*(1-tLeft/tTotal) : 0;
 }
 
-// ════════════════════════════════════════════
-//  OVERLAY
-// ════════════════════════════════════════════
-function showOverlay(nextName, cb) {
-  isPausing     = true;
-  overlayLeft   = 60;
-  overlayCallback = cb;
-
-  document.getElementById('overlay-tag').textContent       = t('overlayTag');
+// ══════════════════════════════════════════════════
+//  PAUSE OVERLAY (free mode)
+// ══════════════════════════════════════════════════
+function showPauseOverlay(nextName, cb) {
+  isPausing=true; overlayLeft=60; overlayCallback=cb;
+  document.getElementById('overlay-tag').textContent      = t('overlayTag');
   document.getElementById('overlay-next-label').textContent = t('overlayNextLabel');
-  document.getElementById('overlay-next-name').textContent  = nextName || '—';
+  document.getElementById('overlay-next-name').textContent  = nextName||'—';
   document.getElementById('overlay-countdown').textContent  = fmt(overlayLeft);
-  document.getElementById('overlay-bar').style.width        = '100%';
+  document.getElementById('overlay-bar').style.width = '100%';
   document.getElementById('overlay-pause').classList.add('visible');
-
-  // Small delay so the width:100% transition registers before ticking
-  setTimeout(() => {
-    overlayTid = setInterval(overlayTick, 1000);
-  }, 80);
+  setTimeout(()=>{ overlayTid=setInterval(overlayTick,1000); },80);
 }
-
 function overlayTick() {
   overlayLeft--;
   document.getElementById('overlay-countdown').textContent = fmt(overlayLeft);
-  document.getElementById('overlay-bar').style.width = (100 * overlayLeft / 60) + '%';
-
-  if (overlayLeft <= 0) {
-    clearInterval(overlayTid); overlayTid = null;
+  document.getElementById('overlay-bar').style.width = (100*overlayLeft/60)+'%';
+  if (overlayLeft<=0) {
+    clearInterval(overlayTid); overlayTid=null;
     document.getElementById('overlay-pause').classList.remove('visible');
-    isPausing = false;
+    isPausing=false;
     if (overlayCallback) overlayCallback();
-    // Restart main tick for the new phase
-    running = true;
-    tid = setInterval(tick, 1000);
+    running=true; tid=setInterval(tick,1000);
+  }
+}
+function clearPauseOverlay() {
+  if (overlayTid) { clearInterval(overlayTid); overlayTid=null; }
+  document.getElementById('overlay-pause').classList.remove('visible');
+  isPausing=false; overlayCallback=null;
+}
+
+// ══════════════════════════════════════════════════
+//  ERROR OVERLAY (A2 mode)
+// ══════════════════════════════════════════════════
+function showErrorOverlay() {
+  isErrorInput=true;
+  pendingErrorCount=-1;
+  // Reset UI state
+  document.getElementById('error-tag').textContent      = t('errorTag');
+  document.getElementById('error-question').textContent = t('errorQuestion');
+  document.getElementById('error-confirm-btn').textContent = t('errorConfirm');
+  document.getElementById('decision-panel').className   = 'decision-panel';
+  document.getElementById('error-confirm-btn').className = 'error-confirm-btn';
+  // Clear button selections
+  for (let n=0;n<=5;n++) {
+    const b=document.getElementById('err-btn-'+n);
+    if (b) b.className='error-num-btn';
+  }
+  document.getElementById('overlay-error').classList.add('visible');
+}
+
+function selectErrorCount(n) {
+  pendingErrorCount=n;
+  // Determine decision
+  let dec, cls, btnCls;
+  if (n<=1)       { dec='good'; cls='good'; btnCls='selected-good'; }
+  else if (n<=3)  { dec='warn'; cls='warn'; btnCls='selected-warn'; }
+  else            { dec='bad';  cls='bad';  btnCls='selected-bad';  }
+  pendingA2Decision=dec;
+
+  // Highlight selected button
+  for (let i=0;i<=5;i++) {
+    const b=document.getElementById('err-btn-'+i);
+    if (b) b.className='error-num-btn'+(i===n?' '+btnCls:'');
+  }
+
+  // Show decision panel
+  const panel=document.getElementById('decision-panel');
+  panel.className='decision-panel visible '+cls;
+  document.getElementById('decision-title').textContent = t('decisionGoodTitle'.replace('Good',dec==='good'?'Good':dec==='warn'?'Warn':'Bad').replace('Good','Good').replace('warn','Warn').replace('bad','Bad'));
+
+  // Pick correct translation keys
+  const titleKey = dec==='good'?'decisionGoodTitle':dec==='warn'?'decisionWarnTitle':'decisionBadTitle';
+  const subKey   = dec==='good'?'decisionGoodSub'  :dec==='warn'?'decisionWarnSub'  :'decisionBadSub';
+  document.getElementById('decision-title').textContent = t(titleKey);
+  document.getElementById('decision-sub').textContent   = t(subKey);
+
+  // Show confirm button
+  document.getElementById('error-confirm-btn').className = 'error-confirm-btn visible';
+}
+
+function confirmErrors() {
+  if (pendingErrorCount < 0) return;
+  const n=pendingErrorCount;
+  const dec=pendingA2Decision;
+
+  // Close overlay
+  document.getElementById('overlay-error').classList.remove('visible');
+  isErrorInput=false;
+
+  // Set analysis phase duration
+  const analysisFase=CFG.fases[3]; // always index 3 in A2 mode
+  analysisFase.dur = n*10*60;
+
+  // Set status based on decision
+  if (dec==='good')      setStatus(t('decisionGoodTitle'),'ok');
+  else if (dec==='warn') setStatus(t('decisionWarnTitle'),'warn');
+  else                   setStatus(t('decisionBadTitle'), 'bad');
+
+  // Navigate phases
+  if (n===0) {
+    // Skip analysis, go directly to break
+    phIdx=4;
+    setTimeout(()=>{ startPhase(); running=true; tid=setInterval(tick,1000); },600);
+  } else {
+    // Update analysis phase name to show duration
+    analysisFase.nome = t('analysisPhase');
+    analysisFase.hint = t('analysisStatus').replace('{n}',n);
+    phIdx=3;
+    setTimeout(()=>{ startPhase(); running=true; tid=setInterval(tick,1000); },600);
   }
 }
 
-function clearOverlay() {
-  if (overlayTid) { clearInterval(overlayTid); overlayTid = null; }
-  document.getElementById('overlay-pause').classList.remove('visible');
-  isPausing = false;
-  overlayCallback = null;
+function clearErrorOverlay() {
+  document.getElementById('overlay-error').classList.remove('visible');
+  isErrorInput=false; pendingErrorCount=-1; pendingA2Decision=null;
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 //  TIMER LOGIC
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 function startPhase() {
-  bFired = false;
-  const f = CFG.fases[phIdx];
-  tLeft = f.dur; tTotal = f.dur;
-  setStatus('', false);
-  render();
+  bFired=false;
+  const f=CFG.fases[phIdx];
+  tLeft=f.dur; tTotal=f.dur;
+  setStatus('',null); render();
 }
 
 function tick() {
-  if (!running || isPausing) return;
-  tLeft = Math.max(0, tLeft - 1);
-
-  if (!bFired && tLeft === CFG.beepWarn) {
-    bFired = true;
-    playBeeps(CFG.beepCount, 880);
-    setStatus('⚠  ' + fmt(CFG.beepWarn) + ' …', true);
+  if (!running||isPausing||isErrorInput) return;
+  tLeft=Math.max(0,tLeft-1);
+  if (!bFired && tLeft===CFG.beepWarn && CFG.fases[phIdx].a2type!=='analysis') {
+    bFired=true; playBeeps(CFG.beepCount,880);
+    setStatus('⚠  '+fmt(CFG.beepWarn)+' …','warn');
   }
-
   render();
-  if (tLeft <= 0) onEnd();
+  if (tLeft<=0) onEnd();
 }
 
 function onEnd() {
   playBell();
+  if (currentMode==='a2') { onEndA2(); return; }
+  onEndFree();
+}
 
-  const fase   = CFG.fases[phIdx];
-  const isLast = phIdx >= CFG.fases.length - 1;
-
+function onEndFree() {
+  const fase=CFG.fases[phIdx];
+  const isLast=phIdx>=CFG.fases.length-1;
   if (isLast) {
-    if (cyc < CFG.ciclos) {
-      cyc++; phIdx = 0;
-      setTimeout(() => {
-        setStatus(t('statusCycle').replace('{c}', cyc).replace('{t}', CFG.ciclos), true);
+    if (cyc<CFG.ciclos) {
+      cyc++; phIdx=0;
+      setTimeout(()=>{ setStatus(t('statusCycle').replace('{c}',cyc).replace('{t}',CFG.ciclos),'hi'); startPhase(); },1200);
+    } else { endAll(); }
+    return;
+  }
+  if (fase.pauseAfter) {
+    const nextName=CFG.fases[phIdx+1].nome;
+    hardStop();
+    setTimeout(()=>{
+      showPauseOverlay(nextName,()=>{
+        phIdx++;
+        setStatus('▶  '+CFG.fases[phIdx].nome,'hi');
         startPhase();
-      }, 1200);
-    } else {
-      endAll();
-    }
+      });
+    },600);
+  } else {
+    phIdx++;
+    setTimeout(()=>{ setStatus('▶  '+CFG.fases[phIdx].nome,'hi'); startPhase(); },900);
+  }
+}
+
+function onEndA2() {
+  const fase=CFG.fases[phIdx];
+  const isLast=phIdx>=CFG.fases.length-1;
+
+  if (fase.a2type==='quiz') {
+    hardStop();
+    setTimeout(()=>showErrorOverlay(),500);
     return;
   }
 
-  if (fase.pauseAfter) {
-    // Show the locked 60-second overlay
-    const nextName = CFG.fases[phIdx + 1].nome;
-    hardStop(); // stop main tick while overlay runs
-    setTimeout(() => {
-      showOverlay(nextName, () => {
-        phIdx++;
-        setStatus('▶  ' + CFG.fases[phIdx].nome, true);
+  if (isLast) {
+    if (cyc<CFG.ciclos) {
+      cyc++; phIdx=0; pendingErrorCount=-1; pendingA2Decision=null;
+      setTimeout(()=>{
+        setStatus(t('statusCycle').replace('{c}',cyc).replace('{t}',CFG.ciclos),'hi');
+        // Restore analysis phase
+        CFG.fases[3].dur=0; CFG.fases[3].nome=t('analysisPhase'); CFG.fases[3].hint=t('analysisHint');
         startPhase();
-        // overlayTick will restart tid after this cb
-      });
-    }, 600);
-  } else {
-    phIdx++;
-    setTimeout(() => {
-      setStatus('▶  ' + CFG.fases[phIdx].nome, true);
-      startPhase();
-    }, 900);
+      },1200);
+    } else { endAll(); }
+    return;
   }
+
+  phIdx++;
+  setTimeout(()=>{ setStatus('▶  '+CFG.fases[phIdx].nome,'hi'); startPhase(); },900);
 }
 
 function endAll() {
-  done = true; hardStop(); render();
-  setStatus(t('congrats'), true);
-  document.getElementById('btn-main').disabled    = true;
-  document.getElementById('btn-main').textContent = t('doneBtn');
-  document.getElementById('btn-skip').style.display = 'none';
+  done=true; hardStop(); render();
+  setStatus(t('congrats'),'ok');
+  document.getElementById('btn-main').disabled=true;
+  document.getElementById('btn-main').textContent=t('doneBtn');
+  document.getElementById('btn-skip').style.display='none';
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 //  CONTROLS
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 function handleBtn() {
   unlockAudio();
-  if (done || isPausing) return;
-  const btn = document.getElementById('btn-main');
-
+  if (done||isPausing||isErrorInput) return;
+  const btn=document.getElementById('btn-main');
   if (!started) {
-    started = true; startPhase();
-    running = true; tid = setInterval(tick, 1000);
-    btn.textContent = t('pauseTimer');
-    return;
+    started=true; startPhase();
+    running=true; tid=setInterval(tick,1000);
+    btn.textContent=t('pauseTimer'); return;
   }
   if (!running) {
-    running = true; tid = setInterval(tick, 1000);
-    btn.textContent = t('pauseTimer');
+    running=true; tid=setInterval(tick,1000);
+    btn.textContent=t('pauseTimer');
   } else {
-    hardStop();
-    btn.textContent = t('continueTimer');
-    setStatus(t('statusPaused'), false);
+    hardStop(); btn.textContent=t('continueTimer');
+    setStatus(t('statusPaused'),null);
   }
 }
 
 function skipPhase() {
-  if (done || !started || isPausing) return;
-  const wasRunning = running;
-  hardStop(); tLeft = 0; onEnd();
-  if (wasRunning && !done && !isPausing) {
-    running = true; tid = setInterval(tick, 1000);
-  }
+  if (done||!started||isPausing||isErrorInput) return;
+  const wasRunning=running;
+  hardStop(); tLeft=0; onEnd();
+  if (wasRunning&&!done&&!isPausing&&!isErrorInput) { running=true; tid=setInterval(tick,1000); }
 }
 </script>
 </body>
